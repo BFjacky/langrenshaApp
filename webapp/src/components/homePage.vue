@@ -1,10 +1,6 @@
 <template>
   <div class="homePage">
-    <mt-header title="狼人杀" class="header">
-        <mt-button icon="back" slot="left">back</mt-button>
-        <mt-button icon="more" slot="right"></mt-button>
-    </mt-header>
-    <mt-tab-container v-model="selected" swipeable=true>
+    <mt-tab-container v-model="selected" v-bind:swipeable="mytrue">
         <mt-tab-container-item id="shouye">
             这是首页
         </mt-tab-container-item>
@@ -18,7 +14,7 @@
             这是我的页
         </mt-tab-container-item>
     </mt-tab-container>
-    <mt-tabbar v-model="selected" fixed=true class = 'bar'>
+    <mt-tabbar v-model="selected" v-bind:fixed="mytrue" class = 'bar'>
         <mt-tab-item id="shouye" class="item">
         <img slot="icon" src="../assets/geren_xiao.png">
         首页
@@ -73,9 +69,6 @@ export default {
 .homePage {
   height: 100%;
   width: 100%;
-}
-.header {
-  background-color: #454545;
 }
 .bar {
   height: 8%;
