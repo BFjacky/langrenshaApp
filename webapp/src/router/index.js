@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
-import bottomBar from '@/components/bottomBar'
+import homePage from '@/components/homePage'
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'bottomBar',
-      component: bottomBar
+      name: 'homePage',
+      component: homePage
     }
   ]
 })
