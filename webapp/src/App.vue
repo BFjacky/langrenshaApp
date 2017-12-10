@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <mt-header title="狼人杀" class="header" v-bind:fixed="mytrue">
+    <!--mt-header title="狼人杀" class="header" v-bind:fixed="mytrue">
         <mt-button icon="back" slot="left">back</mt-button>
         <mt-button icon="more" slot="right"></mt-button>
-    </mt-header>
+    </mt-header-->
     <router-view class="my_router"></router-view>
   </div>
 </template>
@@ -33,10 +33,10 @@ export default {
 }
 .header {
   background-color: #454545;
-  height:45px
+  height: 45px;
 }
 .my_router {
-  margin-top: 45px;
+  margin-top: 0px;
 }
 body,
 html {

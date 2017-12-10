@@ -1,17 +1,17 @@
 <template>
   <div class="homePage">
-    <mt-tab-container v-model="selected" v-bind:swipeable="mytrue">
+    <mt-tab-container v-model="selected" v-bind:swipeable="myfalse">
         <mt-tab-container-item id="shouye">
             这是首页
         </mt-tab-container-item>
         <mt-tab-container-item id="fangjian">
             这是房间页
         </mt-tab-container-item>
-        <mt-tab-container-item id="faxian">
-            这是发现页
+        <mt-tab-container-item id="haoyou">
+            这是好友页
         </mt-tab-container-item>
         <mt-tab-container-item id="wode">
-            这是我的页
+            <personal></personal>
         </mt-tab-container-item>
     </mt-tab-container>
     <mt-tabbar v-model="selected" v-bind:fixed="mytrue" class = 'bar'>
@@ -23,9 +23,9 @@
         <img slot="icon" src="../assets/geren_xiao.png">
         房间
         </mt-tab-item>
-        <mt-tab-item id="faxian"class="item" >
+        <mt-tab-item id="haoyou"class="item" >
         <img slot="icon" src="../assets/geren_xiao.png">
-        发现
+        消息
         </mt-tab-item>
         <mt-tab-item id="wode" class="item">
         <img slot="icon" src="../assets/geren_xiao.png">
@@ -43,11 +43,13 @@ import {
   Header,
   Button
 } from "mint-ui";
+import personal from "./personal/personal_all.vue";
 export default {
   data: function() {
     return {
       selected: "shouye",
-      mytrue: true
+      mytrue: true,
+      myfalse: false,
     };
   },
   components: {
@@ -56,7 +58,8 @@ export default {
     mtTabContainer: TabContainer,
     mtTabContainerItem: TabContainerItem,
     mtHeader: Header,
-    mtButton: Button
+    mtButton: Button,
+    personal: personal
   },
   watch: {
     selected: function() {
