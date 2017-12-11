@@ -1,5 +1,5 @@
 <template>
-  <div class="blackbutton" v-on:click="buttonClick" v-on:touchstart="touchstart" v-on:touchend="touchend" v-bind:class="status" v-on:AnimationEnd="AnimationEnd">
+  <div class="blackbutton" v-on:click="buttonClick" v-on:touchstart="touchstart" v-on:touchend="touchend" v-bind:class="status" >
       <div class="iconBack" v-bind:class="{color1:type==1,color2:type==2,color3:type==3,color4:type==4,
       color5:type==5,color6:type==6,color7:type==7,color8:type==8,color9:type==9}">
         <div class="buttonIcon"></div>
@@ -16,7 +16,7 @@ export default {
 
   data: function() {
     return {
-      status: ""
+      status: "beBig"
     };
   },
   methods: {
@@ -28,7 +28,14 @@ export default {
       this.status = "beBig";
     },
     AnimationEnd: function() {
-      this.status = "";
+      if (this.status === "beBig") {
+        this.status = "";
+      }
+    }
+  },
+  watch: {
+    status: function() {
+      console.log("status:", this.status);
     }
   }
 };
@@ -49,6 +56,7 @@ export default {
   justify-content: center;
   align-items: center;
   border-radius: 25%;
+  box-shadow: 0px 0px 5px 2px rgba(200,204,204,0.3);
 }
 .color1 {
   background: linear-gradient(

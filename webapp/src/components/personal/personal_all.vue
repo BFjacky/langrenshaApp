@@ -7,7 +7,8 @@
           <div class="text_h5">ID:{{id}}</div>
         </div>
         <div class="zhanwei"></div>
-        <div class="more_icon"></div>
+        <canvas id="more_icon" width="30" height="30"></canvas>
+        <!--div class="more_icon"></div-->
       </div>
       <div class="main">
         
@@ -56,6 +57,15 @@ export default {
       name: "NineLives", //昵称
       id: "13363688" //用户id
     };
+  },
+  mounted: function() {
+    var cas = $("#more_icon")[0].getContext("2d");
+    cas.moveTo(20, 5);
+    cas.lineTo(30, 15);
+    cas.lineTo(20, 25);
+    cas.lineWidth = 3;
+    cas.strokeStyle = "#b6c4bd";
+    cas.stroke();
   },
   components: {
     blockbutton
@@ -107,12 +117,9 @@ export default {
 .zhanwei {
   flex-grow: 1;
 }
-.more_icon {
-  background-image: url(../../assets/arrowRight.png);
-  background-size: 100%;
-  height: 30px;
-  width: 30px;
-  margin-right: 10px;
+#more_icon {
+  /*background-image: url(../../assets/arrowRight.png);*/
+  margin-right: 20px;
 }
 .main {
   border: 1px soild black;
