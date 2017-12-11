@@ -68,4 +68,10 @@ export default {
   width: 30px;
   margin-right: 10px;
 }
+.main {
+  border: 1px soild black;
+  background-color: black;
+  height: 20px;
+  width: 20px;
+}
 </style>

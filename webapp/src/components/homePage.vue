@@ -4,9 +4,9 @@
         <mt-tab-container-item id="shouye">
             这是首页
         </mt-tab-container-item>
-        <mt-tab-container-item id="fangjian">
+        <!--mt-tab-container-item id="fangjian">
             这是房间页
-        </mt-tab-container-item>
+        </mt-tab-container-item-->
         <mt-tab-container-item id="haoyou">
             这是好友页
         </mt-tab-container-item>
@@ -19,10 +19,10 @@
         <img slot="icon" src="../assets/geren_xiao.png">
         首页
         </mt-tab-item>
-        <mt-tab-item id="fangjian" class="item">
+        <!--mt-tab-item id="fangjian" class="item">
         <img slot="icon" src="../assets/geren_xiao.png">
         房间
-        </mt-tab-item>
+        </mt-tab-item-->
         <mt-tab-item id="haoyou"class="item" >
         <img slot="icon" src="../assets/geren_xiao.png">
         消息
@@ -49,7 +49,7 @@ export default {
     return {
       selected: "shouye",
       mytrue: true,
-      myfalse: false,
+      myfalse: false
     };
   },
   components: {
