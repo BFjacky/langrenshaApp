@@ -9,16 +9,55 @@
         <div class="zhanwei"></div>
         <div class="more_icon"></div>
       </div>
-      <div class="main"></div>
+      <div class="main">
+        
+        <div class="buttonBar">
+          <blockbutton title="游戏规则" type=1></blockbutton>
+        </div>
+        <div class="buttonBar">
+          <blockbutton title="游戏规则" type=2></blockbutton>
+        </div>
+        <div class="buttonBar">
+          <blockbutton title="游戏规则" type=3></blockbutton>
+        </div>
+        
+        <div class="divide_line"></div>
+       
+        <div class="buttonBar">
+          <blockbutton title="游戏规则"type=3></blockbutton>
+        </div>
+        <div class="buttonBar">
+          <blockbutton title="游戏规则"type=1></blockbutton>
+        </div>
+        <div class="buttonBar">
+          <blockbutton title="游戏规则"type=2></blockbutton>        
+        </div>
+
+        <div class="divide_line"></div>
+
+        <div class="buttonBar">
+          <blockbutton title="游戏规则"type=2></blockbutton>
+        </div>
+        <div class="buttonBar">
+          <blockbutton title="游戏规则"type=3></blockbutton>
+        </div>
+        <div class="buttonBar">
+          <blockbutton title="游戏规则"type=1></blockbutton>        
+        </div>
+      </div>
   </div>
 </template>
 <script>
+import blockbutton from "./blockbutton";
 export default {
   data: function() {
     return {
       name: "NineLives", //昵称
       id: "13363688" //用户id
     };
+  },
+  components: {
+    blockbutton
   }
 };
 </script>
@@ -70,8 +109,21 @@ export default {
 }
 .main {
   border: 1px soild black;
-  background-color: black;
-  height: 20px;
-  width: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100vw;
+  justify-content: center;
+}
+.buttonBar {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  width: 33%;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+.divide_line {
+  width: 100vw;
+  border-top: 7px solid #f3f3f3;
 }
 </style>
