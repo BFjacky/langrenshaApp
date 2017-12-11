@@ -4,7 +4,10 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 
-function resolve (dir) {
+//引入jquey 1.引入webpack
+var webpack = require('webpack')
+
+function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
@@ -36,6 +39,8 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
+      //如果使用npm安装的jquery
+      'jquery': 'jquery'
     }
   },
   module: {
@@ -87,5 +92,11 @@ module.exports = {
     net: 'empty',
     tls: 'empty',
     child_process: 'empty'
-  }
+  },
+  //jquery
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery"
+    })]
 }

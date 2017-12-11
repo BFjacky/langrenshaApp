@@ -48,6 +48,7 @@
   </div>
 </template>
 <script>
+import $ from "jquery";
 import blockbutton from "./blockbutton";
 export default {
   data: function() {
@@ -72,7 +73,12 @@ export default {
   width: 100vw;
   height: 20vh;
   border: 0px solid black;
-  background-image: url(../../assets/yuncai.png);
+  background: linear-gradient(
+    to bottom right,
+    rgba(195, 241, 245, 0.5),
+    rgba(71, 229, 241, 0.7)
+  );
+  /*background-image: url(../../assets/yuncai.png);*/
   background-size: 100%;
   display: flex;
   align-items: center;
@@ -80,11 +86,12 @@ export default {
 .touxiang_icon {
   width: 75px;
   height: 75px;
-  border: 1px solid black;
+  border: 1px solid #b6c4bd;
   border-radius: 50%;
   margin-left: 20px;
 }
 .text {
+  color: #b6c4bd;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -124,6 +131,6 @@ export default {
 }
 .divide_line {
   width: 100vw;
-  border-top: 7px solid #f3f3f3;
+  border-top: 0px solid #f3f3f3;
 }
 </style>

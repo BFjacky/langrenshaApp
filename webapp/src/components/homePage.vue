@@ -74,9 +74,12 @@ export default {
   width: 100%;
 }
 .bar {
-  height: 8%;
+  height: 10%;
 }
 .item {
   height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 </style>

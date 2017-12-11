@@ -75,7 +75,7 @@ export default {
 .buttonIcon {
   height: 60%;
   width: 60%;
-  background-image: url(../../assets/guize.svg);
+  /*background-image: url(../../assets/guize.svg);*/
   opacity: 1;
 }
 .buttonText {
