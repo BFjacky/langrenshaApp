@@ -20,7 +20,9 @@ export default {
     };
   },
   methods: {
-    buttonClick: function() {},
+    buttonClick: function() {
+      this.$emit('clicklick',this.title);
+    },
     touchstart: function() {
       this.status = "beSmall";
     },
@@ -56,26 +58,26 @@ export default {
   justify-content: center;
   align-items: center;
   border-radius: 25%;
-  box-shadow: 0px 0px 5px 2px rgba(200,204,204,0.3);
+  box-shadow: 0px 0px 5px 2px rgba(200, 204, 204, 0.3);
 }
 .color1 {
-  background: linear-gradient(
-    to bottom right,
-    rgba(198, 246, 249, 0.2),
+  background: radial-gradient(
+    circle,
+    rgba(128, 219, 248, 0.7),
     rgba(24, 207, 220, 0.7)
   );
 }
 .color2 {
-  background: linear-gradient(
-    to bottom right,
-    rgba(248, 209, 118, 0.2),
+  background: radial-gradient(
+    circle,
+    rgba(248, 209, 118, 0.7),
     rgba(239, 173, 20, 0.7)
   );
 }
 .color3 {
-  background: linear-gradient(
-    to bottom right,
-    rgba(164, 249, 210, 0.2),
+  background: radial-gradient(
+    circle,
+    rgba(164, 249, 210, 0.7),
     rgba(37, 251, 151, 0.7)
   );
 }
@@ -88,11 +90,11 @@ export default {
 }
 .buttonText {
   height: 25%;
-  width: 100%;
+  width: 140%;
   font-size: 80%;
   text-align: center;
-  letter-spacing: 1px;
-  padding-left: 1px;
+  letter-spacing: 2px;
+  padding-left: 2px;
   margin-top: 3px;
 }
 @keyframes small {

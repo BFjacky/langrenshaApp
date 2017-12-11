@@ -1,6 +1,6 @@
 <template>
   <div class="personal_all">
-      <div class="header">
+      <div class="header" v-on:click="gotoPersonalPage">
         <div class="touxiang_icon"></div>
         <div class="text">
           <div class="text_h4">{{name}}</div>
@@ -12,20 +12,20 @@
       </div>
       <div class="main">
         
-        <div class="buttonBar">
-          <blockbutton title="游戏规则" type=1></blockbutton>
+        <div class="buttonBar" >
+          <blockbutton v-on:clicklick="gotoNextPage" title="游戏规则" type=1></blockbutton>
         </div>
         <div class="buttonBar">
-          <blockbutton title="游戏规则" type=2></blockbutton>
+          <blockbutton title="狼人杀词典" type=2></blockbutton>
         </div>
         <div class="buttonBar">
-          <blockbutton title="游戏规则" type=3></blockbutton>
+          <blockbutton title="游戏记录" type=3></blockbutton>
         </div>
         
         <div class="divide_line"></div>
        
         <div class="buttonBar">
-          <blockbutton title="游戏规则"type=3></blockbutton>
+          <blockbutton title="分享给好友"type=3></blockbutton>
         </div>
         <div class="buttonBar">
           <blockbutton title="游戏规则"type=1></blockbutton>
@@ -43,7 +43,7 @@
           <blockbutton title="游戏规则"type=3></blockbutton>
         </div>
         <div class="buttonBar">
-          <blockbutton title="游戏规则"type=1></blockbutton>        
+          <blockbutton title="开发者"type=1></blockbutton>        
         </div>
       </div>
   </div>
@@ -51,12 +51,30 @@
 <script>
 import $ from "jquery";
 import blockbutton from "./blockbutton";
+import { Popup } from "mint-ui";
+import personDetail from "./personalDetail";
 export default {
   data: function() {
     return {
       name: "NineLives", //昵称
       id: "13363688" //用户id
     };
+  },
+  methods: {
+    gotoPersonalPage: function() {
+      //跳转至个人信息页面
+      this.$router.push({ name: "personalDetail" });
+    },
+    gotoNextPage: function(title) {
+      console.log(title);
+      //跳转至游戏规则界面
+      switch (title) {
+        case "游戏规则": {
+          this.$router.push({ name: "gamerule" });
+          break;
+        }
+      }
+    }
   },
   mounted: function() {
     var cas = $("#more_icon")[0].getContext("2d");
@@ -68,7 +86,9 @@ export default {
     cas.stroke();
   },
   components: {
-    blockbutton
+    blockbutton,
+    mtPopup: Popup,
+    personDetail
   }
 };
 </script>
@@ -84,7 +104,7 @@ export default {
   height: 20vh;
   border: 0px solid black;
   background: linear-gradient(
-    to bottom right,
+    to top,
     rgba(195, 241, 245, 0.5),
     rgba(71, 229, 241, 0.7)
   );
@@ -92,6 +112,7 @@ export default {
   background-size: 100%;
   display: flex;
   align-items: center;
+  box-shadow: 0px 1px 5px 0px rgba(200, 204, 204, 0.3);
 }
 .touxiang_icon {
   width: 75px;

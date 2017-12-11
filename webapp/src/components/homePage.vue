@@ -65,6 +65,12 @@ export default {
     selected: function() {
       console.log(this.selected);
     }
+  },
+  created: function() {
+    this.selected = this.$common.homePage.selected;
+  },
+  beforeDestroy: function() {
+    this.$common.homePage.selected = this.selected;
   }
 };
 </script>
@@ -74,6 +80,7 @@ export default {
   width: 100%;
 }
 .bar {
+  box-shadow: 0px -1px 5px 0px rgba(200, 204, 204, 0.6);
   height: 10%;
 }
 .item {
