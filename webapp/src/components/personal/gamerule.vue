@@ -79,6 +79,7 @@ export default {
 </script>
 <style scoped>
 .gamerule {
+  position: absolute;
   width: 100vw;
   background-image: url(../../assets/paper2.png);
   background-size: 100%;

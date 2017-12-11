@@ -76,8 +76,9 @@ export default {
 </script>
 <style scoped>
 .homePage {
-  height: 100%;
-  width: 100%;
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
 }
 .bar {
   box-shadow: 0px -1px 5px 0px rgba(200, 204, 204, 0.6);
