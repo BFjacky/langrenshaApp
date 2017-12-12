@@ -117,7 +117,7 @@ export default {
   color: white;
   text-align: center;
   width: 15px;
-  padding-left: 8px;
+  padding-left: 5px;
   padding-right: 5px;
   letter-spacing: 3px;
   padding-top: 2px;

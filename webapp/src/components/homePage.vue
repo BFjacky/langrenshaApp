@@ -47,7 +47,7 @@ import personal from "./personal/personal_all.vue";
 export default {
   data: function() {
     return {
-      selected: "shouye",
+      selected: "",
       mytrue: true,
       myfalse: false
     };
@@ -68,6 +68,9 @@ export default {
   },
   created: function() {
     this.selected = this.$common.homePage.selected;
+    if (this.selected === "") {
+      this.selected = "wode";
+    }
   },
   beforeDestroy: function() {
     this.$common.homePage.selected = this.selected;
