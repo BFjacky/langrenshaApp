@@ -13,13 +13,13 @@
       <div class="main">
         
         <div class="buttonBar" >
-          <blockbutton v-on:clicklick="gotoNextPage" title="游戏规则" type=1></blockbutton>
+          <blockbutton v-on:clicklick="gotoNextPage" title="游戏背景" type=1></blockbutton>
         </div>
         <div class="buttonBar">
-          <blockbutton title="狼人杀词典" type=2></blockbutton>
+          <blockbutton v-on:clicklick="gotoNextPage"title="狼人杀词典" type=2></blockbutton>
         </div>
         <div class="buttonBar">
-          <blockbutton title="游戏记录" type=3></blockbutton>
+          <blockbutton v-on:clicklick="gotoNextPage" title="游戏规则" type=3></blockbutton>
         </div>
         
         <div class="divide_line"></div>
@@ -71,6 +71,14 @@ export default {
       switch (title) {
         case "游戏规则": {
           this.$router.push({ name: "gamerule" });
+          break;
+        }
+        case "狼人杀词典": {
+          this.$router.push({ name: "cidian" });
+          break;
+        }
+        case "游戏背景": {
+          this.$router.push({ name: "gameBackground" });
           break;
         }
       }
