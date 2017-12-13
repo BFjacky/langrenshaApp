@@ -11,7 +11,7 @@
         <!--div class="more_icon"></div-->
       </div>
       <div class="main">
-        
+
         <div class="buttonBar" >
           <blockbutton v-on:clicklick="gotoNextPage" title="游戏背景" type=1></blockbutton>
         </div>
@@ -45,6 +45,7 @@
         <div class="buttonBar">
           <blockbutton title="开发者"type=1></blockbutton>        
         </div>
+
       </div>
   </div>
 </template>
@@ -53,16 +54,23 @@ import $ from "jquery";
 import blockbutton from "./blockbutton";
 import { Popup } from "mint-ui";
 import personDetail from "./personalDetail";
+import axios from "axios";
 export default {
   data: function() {
     return {
       name: "NineLives", //昵称
-      id: "13363688" //用户id
+      id: "13363688", //用户id
+      haslogin: false //是否已经登陆一个账号
     };
   },
   methods: {
     gotoPersonalPage: function() {
       //跳转至个人信息页面
+      if (!this.haslogin) {
+        //如果没有用户登陆，跳转至用户登陆界面
+        this.$router.push({ name: "loginPage" });
+        return ;
+      }
       this.$router.push({ name: "personalDetail" });
     },
     gotoNextPage: function(title) {
@@ -84,6 +92,7 @@ export default {
       }
     }
   },
+  created: function() {},
   mounted: function() {
     var cas = $("#more_icon")[0].getContext("2d");
     cas.moveTo(20, 5);

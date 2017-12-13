@@ -5,6 +5,8 @@ import personalDetail from '@/components/personal/personalDetail'
 import cidian from '@/components/personal/cidian'
 import gameBackground from '@/components/personal/gameBackground'
 import gamerule from '@/components/personal/gamerule'
+import loginPage from '@/components/personal/loginPage'
+import signin from '@/components/personal/signin'
 Vue.use(Router)
 
 export default new Router({
@@ -33,6 +35,16 @@ export default new Router({
       path: '/gamerule',
       name: 'gamerule',
       component: gamerule
-    }
+    },
+    {
+      path: '/loginPage',
+      name: 'loginPage',
+      component: loginPage
+    },
+    {
+      path: '/signin',
+      name: 'signin',
+      component: signin
+    },
   ]
 })

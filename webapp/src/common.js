@@ -5,6 +5,12 @@ export default {
             homePage: {
                 selected: '',
             },
+            //url集合
+            url: {
+                host: 'http://ccc.feit.me',
+                userSignin: '/user/signin',
+                userLogin: '/user/login',
+            },
             //跟据当前路由检查该页面是回退的还是前进
             urlName: {
                 homePage: 0,
@@ -12,6 +18,8 @@ export default {
                 personalDetail: 1,
                 cidian: 1,
                 gamerule: 1,
+                loginPage: 1,
+                signin: 2,
                 beforeUrl: '',
             },
             /**
