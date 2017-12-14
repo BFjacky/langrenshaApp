@@ -11,7 +11,8 @@
 </template>
 
 <script>
-import { Header, Button } from "mint-ui";
+import { Header, Button, Indicator } from "mint-ui";
+import axios from "axios";
 export default {
   name: "app",
   data: function() {
@@ -33,6 +34,27 @@ export default {
         this.transitionName = "backMov";
       } else {
         this.transitionName = "forwardMov";
+      }
+      //每当路由发生变化时都要隐藏掉indicator组件
+      Indicator.close();
+    }
+  },
+  created: async function() {
+    //使用当前的账号尝试登陆
+    if (!this.$common.status.hasTryLogin) {
+      let loginResult = await axios({
+        url: this.$common.url.host + this.$common.url.userLogin,
+        data: {
+          something: true
+        },
+        method: "POST",
+        withCredentials: true
+      });
+
+      //改变状态
+      this.$common.status.hasTryLogin = true;
+      if (loginResult.data.success) {
+        this.$common.status.hasLogin = true;
       }
     }
   }

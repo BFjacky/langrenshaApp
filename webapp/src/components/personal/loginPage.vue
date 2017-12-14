@@ -13,7 +13,7 @@
 </template>
 <script>
 import axios from "axios";
-import { Toast } from "mint-ui";
+import { Toast, Indicator } from "mint-ui";
 export default {
   data: function() {
     return {
@@ -39,6 +39,11 @@ export default {
         });
         return;
       }
+      //用获得的账号和密码尝试登陆，加载动画
+      Indicator.open({
+        text: "登陆中",
+        spinnerType: "triple-bounce"
+      });
       let loginResult = await axios({
         url: this.$common.url.host + this.$common.url.userLogin,
         method: "POST",
@@ -48,6 +53,7 @@ export default {
         },
         withCredentials: true
       });
+      Indicator.close();
       //登陆成功
       if (loginResult.data.success) {
         Toast({
@@ -118,10 +124,10 @@ export default {
   font-size: 18px;
   margin-top: 10vh;
   width: 80vw;
-  height: 6vh;
-  border-radius: 2.5vh;
+  height: 40px;
+  border-radius: 18px;
   text-align: center;
-  line-height: 6vh;
+  line-height: 40px;
   letter-spacing: 10px;
   padding-left: 10px;
   background: linear-gradient(

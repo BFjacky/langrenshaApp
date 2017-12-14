@@ -7,8 +7,15 @@ class UserController extends Controller {
         this.ctx.body = 'hi, egg';
     }
     async userLogin() {
-        const account = this.ctx.request.body.account;
-        const password = this.ctx.request.body.password;
+        let account = this.ctx.request.body.account;
+        let password = this.ctx.request.body.password;
+
+        //查看token携带的用户信息
+        if (this.ctx.user != undefined) {
+            account = this.ctx.user.account;
+            password = this.ctx.user.password;
+            this.ctx.user.infoByToken = true;
+        }
         //数据库查询account
         const findByAccount = function (account) {
             return new Promise((resolve, reject) => {
@@ -50,12 +57,15 @@ class UserController extends Controller {
         if (userResult.length === 1) {
             //登陆成功
             if (password === userResult[0].password) {
-                let cookieStr = randomString();
-                this.ctx.cookies.set('lrstoken', cookieStr, {
-                    maxAge: 1000 * 60 * 60 * 24 * 7,
-                });
-                //登陆，将新的cookie字符串插入数据库中
-                let upsertResult = await upsertToken(account, cookieStr);
+                //用户手动登陆，设置新的token
+                if (!this.ctx.user.infoByToken) {
+                    let cookieStr = randomString();
+                    this.ctx.cookies.set('lrstoken', cookieStr, {
+                        maxAge: 1000 * 60 * 60 * 24 * 7,
+                    });
+                    //登陆，将新的cookie字符串插入数据库中
+                    let upsertResult = await upsertToken(account, cookieStr);
+                }
                 this.ctx.body = { success: true, message: '登陆成功' };
                 return
             }

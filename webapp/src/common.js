@@ -5,6 +5,13 @@ export default {
             homePage: {
                 selected: '',
             },
+            //状态管理
+            status: {
+                //当前用户是否已经尝试过登陆请求
+                hasTryLogin: false,
+                //当前用户是否已经登陆成功
+                hasLogin: false,
+            },
             //url集合
             url: {
                 host: 'http://ccc.feit.me',

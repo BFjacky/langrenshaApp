@@ -12,7 +12,7 @@
 </template>
 <script>
 import axios from "axios";
-import { Toast } from "mint-ui";
+import { Toast, Indicator } from "mint-ui";
 export default {
   data: function() {
     return {
@@ -32,13 +32,6 @@ export default {
           duration: 1000
         });
         return;
-      } else if (this.password !== this.password2) {
-        Toast({
-          message: "两次密码输入不一致",
-          position: "middle",
-          duration: 1000
-        });
-        return;
       } else if (this.password == "") {
         Toast({
           message: "密码不能为空",
@@ -46,15 +39,41 @@ export default {
           duration: 1000
         });
         return;
+      } else if (this.account.split("").length < 6) {
+        Toast({
+          message: "账号需大于6位",
+          position: "middle",
+          duration: 1000
+        });
+        return;
+      } else if (this.password.split("").length < 6) {
+        Toast({
+          message: "密码需大于6位",
+          position: "middle",
+          duration: 1000
+        });
+        return;
+      } else if (this.password !== this.password2) {
+        Toast({
+          message: "两次密码输入不一致",
+          position: "middle",
+          duration: 1000
+        });
+        return;
       }
+      Indicator.open({
+        text: "注册中",
+        spinnerType: "triple-bounce"
+      });
       let result = await axios({
-        url: this.$common.url.host + this.$common.url.userSignin,
+        url: _this.$common.url.host + _this.$common.url.userSignin,
         method: "post",
         data: {
-          account: this.account,
-          password: this.password
+          account: _this.account,
+          password: _this.password
         }
       });
+      Indicator.close();
       Toast({
         message: result.data.message,
         position: "middle",
@@ -64,20 +83,25 @@ export default {
       if (result.data.success) {
         setTimeout(async function() {
           //访问后端路由，尝试登陆请求
+          Indicator.open({
+            text: "登陆中",
+            spinnerType: "triple-bounce"
+          });
           let loginResult = await axios({
-            url:_this.$common.url.host+_this.$common.url.userLogin,
-            method:"POST",
-            data:{
-              account:_this.account,
-              password:_this.password,
+            url: _this.$common.url.host + _this.$common.url.userLogin,
+            method: "POST",
+            data: {
+              account: _this.account,
+              password: _this.password
             }
-          })
+          });
+          Indicator.close();
           //登陆成功
-          console.log('登陆成功')
-          if(loginResult.data.success){
-              _this.$router.push({
-                name:"homePage"
-              })
+          console.log("登陆成功");
+          if (loginResult.data.success) {
+            _this.$router.push({
+              name: "homePage"
+            });
           }
         }, 1000);
       }
@@ -126,10 +150,10 @@ export default {
   font-size: 18px;
   margin-top: 10vh;
   width: 80vw;
-  height: 6vh;
-  border-radius: 2.5vh;
+  height: 40px;
+  border-radius: 18px;
   text-align: center;
-  line-height: 6vh;
+  line-height: 40px;
   letter-spacing: 10px;
   padding-left: 10px;
   background: linear-gradient(

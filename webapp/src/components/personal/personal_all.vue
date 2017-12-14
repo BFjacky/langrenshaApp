@@ -66,11 +66,12 @@ export default {
   methods: {
     gotoPersonalPage: function() {
       //跳转至个人信息页面
-      if (!this.haslogin) {
+      if (!this.$common.status.hasLogin) {
         //如果没有用户登陆，跳转至用户登陆界面
         this.$router.push({ name: "loginPage" });
-        return ;
+        return;
       }
+
       this.$router.push({ name: "personalDetail" });
     },
     gotoNextPage: function(title) {

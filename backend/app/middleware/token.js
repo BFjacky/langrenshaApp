@@ -15,6 +15,11 @@ module.exports = () => {
             })
         }
         const token = ctx.cookies.get('lrstoken');
+        console.log('中间件token:' + token);
+        if (token == "") {
+            await next();
+            reutrn
+        }
         let findResult = await findByToken(token);
         //将用户的信息保存在 context 中
         if (findResult.length === 0) {
@@ -24,7 +29,6 @@ module.exports = () => {
         ctx.user = {};
         ctx.user.account = findResult[0].account;
         ctx.user.password = findResult[0].password;
-        console.log(ctx.user);
         await next();
         return;
     }

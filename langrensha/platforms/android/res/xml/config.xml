@@ -21,5 +21,9 @@
     <allow-intent href="geo:*" />
     <allow-intent href="market:*" />
     <preference name="loglevel" value="DEBUG" />
-    <preference name="Fullscreen" value="true" />
+    <preference name="Fullscreen" value="false" />
+    <preference name="KeyboardShrinksView" value="true" />
+    <preference name="HideKeyboardFormAccessoryBar" value="true" />
+    <preference name="webviewbounce" value="false" />
+    <preference name="AutoHideSplashScreen" value="false" />
 </widget>
