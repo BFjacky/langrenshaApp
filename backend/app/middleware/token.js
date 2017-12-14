@@ -16,9 +16,9 @@ module.exports = () => {
         }
         const token = ctx.cookies.get('lrstoken');
         console.log('中间件token:' + token);
-        if (token == "") {
+        if (token == "" || token == undefined) {
             await next();
-            reutrn
+            return;
         }
         let findResult = await findByToken(token);
         //将用户的信息保存在 context 中

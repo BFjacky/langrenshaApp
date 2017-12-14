@@ -59,8 +59,7 @@ export default {
   data: function() {
     return {
       name: "NineLives", //昵称
-      id: "13363688", //用户id
-      haslogin: false //是否已经登陆一个账号
+      id: "13363688" //用户id
     };
   },
   methods: {
@@ -93,7 +92,17 @@ export default {
       }
     }
   },
-  created: function() {},
+  created: async function() {
+    const _this = this;
+    //获取name id
+    let result = await axios({
+      url: _this.$common.url.host + _this.$common.url.userGetInfo,
+      method: "POST",
+      withCredentials: true,
+      data: {}
+    });
+    console.log(1, result.data);
+  },
   mounted: function() {
     var cas = $("#more_icon")[0].getContext("2d");
     cas.moveTo(20, 5);

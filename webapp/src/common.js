@@ -17,6 +17,7 @@ export default {
                 host: 'http://ccc.feit.me',
                 userSignin: '/user/signin',
                 userLogin: '/user/login',
+                userGetInfo: '/user/getInfo'
             },
             //跟据当前路由检查该页面是回退的还是前进
             urlName: {
