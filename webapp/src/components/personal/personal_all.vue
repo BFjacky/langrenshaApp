@@ -58,8 +58,8 @@ import axios from "axios";
 export default {
   data: function() {
     return {
-      name: "NineLives", //昵称
-      id: "13363688" //用户id
+      name: "请先登录", //昵称
+      id: "" //用户id
     };
   },
   methods: {
@@ -101,7 +101,8 @@ export default {
       withCredentials: true,
       data: {}
     });
-    console.log(1, result.data);
+    this.name = result.data.info.name;
+    this.id = result.data.info.id;
   },
   mounted: function() {
     var cas = $("#more_icon")[0].getContext("2d");

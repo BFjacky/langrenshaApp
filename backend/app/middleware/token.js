@@ -14,7 +14,7 @@ module.exports = () => {
                 })
             })
         }
-        const token = ctx.cookies.get('lrstoken');
+        const token = ctx.cookies.get('lrtoken');
         console.log('中间件token:' + token);
         if (token == "" || token == undefined) {
             await next();

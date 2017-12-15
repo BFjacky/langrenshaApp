@@ -61,6 +61,9 @@ export default {
           position: "middle",
           duration: 1000
         });
+        //更新状态
+        this.$common.status.hasLogin = true;
+        this.$common.status.hasTryLogin = true;
         setTimeout(function() {
           _this.$router.push({
             name: "homePage"

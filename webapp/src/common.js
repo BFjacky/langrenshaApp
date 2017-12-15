@@ -5,6 +5,14 @@ export default {
             homePage: {
                 selected: '',
             },
+            //暂停毫秒
+            pause: function (timeout) {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        resolve(true)
+                    }, timeout);
+                })
+            },
             //状态管理
             status: {
                 //当前用户是否已经尝试过登陆请求

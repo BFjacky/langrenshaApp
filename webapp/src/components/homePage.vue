@@ -2,7 +2,7 @@
   <div class="homePage">
     <mt-tab-container v-model="selected" v-bind:swipeable="myfalse">
         <mt-tab-container-item id="shouye">
-            这是首页
+            <shouye></shouye>
         </mt-tab-container-item>
         <!--mt-tab-container-item id="fangjian">
             这是房间页
@@ -44,6 +44,7 @@ import {
   Button
 } from "mint-ui";
 import personal from "./personal/personal_all.vue";
+import shouye from "./shouye/shouye.vue";
 export default {
   data: function() {
     return {
@@ -59,7 +60,8 @@ export default {
     mtTabContainerItem: TabContainerItem,
     mtHeader: Header,
     mtButton: Button,
-    personal: personal
+    personal: personal,
+    shouye: shouye
   },
   watch: {
     selected: function() {

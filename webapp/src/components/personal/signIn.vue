@@ -71,7 +71,8 @@ export default {
         data: {
           account: _this.account,
           password: _this.password
-        }
+        },
+        withCredentials: true
       });
       Indicator.close();
       Toast({
@@ -81,29 +82,31 @@ export default {
       });
       //注册成功
       if (result.data.success) {
-        setTimeout(async function() {
-          //访问后端路由，尝试登陆请求
-          Indicator.open({
-            text: "登陆中",
-            spinnerType: "triple-bounce"
+        //访问后端路由，尝试登陆请求
+        let res = await this.$common.pause(1000);
+        Indicator.open({
+          text: "登陆中",
+          spinnerType: "triple-bounce"
+        });
+        let loginResult = await axios({
+          url: this.$common.url.host + this.$common.url.userLogin,
+          method: "POST",
+          data: {
+            account: this.account,
+            password: this.password
+          },
+          withCredentials: true
+        });
+        Indicator.close();
+        //登陆成功
+        if (loginResult.data.success) {
+          //更新状态
+          this.$common.status.hasLogin = true;
+          this.$common.status.hasTryLogin = true;
+          this.$router.push({
+            name: "homePage"
           });
-          let loginResult = await axios({
-            url: _this.$common.url.host + _this.$common.url.userLogin,
-            method: "POST",
-            data: {
-              account: _this.account,
-              password: _this.password
-            }
-          });
-          Indicator.close();
-          //登陆成功
-          console.log("登陆成功");
-          if (loginResult.data.success) {
-            _this.$router.push({
-              name: "homePage"
-            });
-          }
-        }, 1000);
+        }
       }
     }
   }

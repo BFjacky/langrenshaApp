@@ -71,14 +71,14 @@ class UserController extends Controller {
             //登陆成功
             if (password === userResult[0].password) {
                 //用户手动登陆，设置新的token
-                if (true) {//this.ctx.user == undefined ? true : !this.ctx.user.infoByToken) {
-                    let cookieStr = randomString();
-                    this.ctx.cookies.set('lrstoken', cookieStr, {
+                if (this.ctx.user == undefined ? true : !this.ctx.user.infoByToken) {
+                    let cookieStr = randomString(100);
+                    this.ctx.cookies.set('lrtoken', cookieStr, {
                         maxAge: 1000 * 60 * 60 * 24 * 7,
                     });
                     //登陆，将新的cookie字符串插入数据库中
                     let upsertResult = await upsertToken(account, cookieStr);
-                    console.log('设置了新的cookie', cookieStr);
+                    console.log('登陆账号设置了新的cookie', cookieStr);
                 }
                 this.ctx.body = { success: true, message: '登陆成功' };
                 return
@@ -146,8 +146,12 @@ class UserController extends Controller {
             this.ctx.body = { success: false, info: {} };
             return;
         }
-        //找到用户信息，成功返回
-        this.ctx.body = { success: true, info: findResult[0] };
+        //找到用户信息，过滤掉敏感信息，成功返回
+        let info = {};
+        info.name = findResult[0].name;
+        info.id = findResult[0].id;
+        info.account = findResult[0].account;
+        this.ctx.body = { success: true, info: info };
         return;
     }
 }
