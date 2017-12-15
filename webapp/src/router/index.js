@@ -8,7 +8,7 @@ import gamerule from '@/components/personal/gamerule'
 import loginPage from '@/components/personal/loginPage'
 import signin from '@/components/personal/signin'
 
-import nh from '@/components/texiao/nihongText'
+import card from '@/components/shouye/card'
 Vue.use(Router)
 
 export default new Router({
@@ -49,9 +49,9 @@ export default new Router({
       component: signin
     },
     {
-      path: '/nh',
-      name: 'nh',
-      component: nh
+      path: '/card',
+      name: 'card',
+      component: card
     },
   ]
 })
