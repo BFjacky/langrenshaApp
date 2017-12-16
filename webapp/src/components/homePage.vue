@@ -2,13 +2,13 @@
   <div class="homePage">
     <mt-tab-container v-model="selected" v-bind:swipeable="myfalse">
         <mt-tab-container-item id="shouye">
-            <shouye></shouye>
+            <shouye v-on:skipRoomPage="skipRoomPage"></shouye>
         </mt-tab-container-item>
         <!--mt-tab-container-item id="fangjian">
             这是房间页
         </mt-tab-container-item-->
-        <mt-tab-container-item id="haoyou">
-            这是好友页
+        <mt-tab-container-item id="fangjian">
+            <room v-bind:roomNumber="roomNumber"></room>
         </mt-tab-container-item>
         <mt-tab-container-item id="wode">
             <personal></personal>
@@ -23,9 +23,9 @@
         <img slot="icon" src="../assets/geren_xiao.png">
         房间
         </mt-tab-item-->
-        <mt-tab-item id="haoyou"class="item" >
+        <mt-tab-item id="fangjian"class="item" >
         <img slot="icon" src="../assets/geren_xiao.png">
-        消息
+        房间
         </mt-tab-item>
         <mt-tab-item id="wode" class="item">
         <img slot="icon" src="../assets/geren_xiao.png">
@@ -43,6 +43,7 @@ import {
   Header,
   Button
 } from "mint-ui";
+import room from "./room/room.vue";
 import personal from "./personal/personal_all.vue";
 import shouye from "./shouye/shouye.vue";
 export default {
@@ -50,7 +51,8 @@ export default {
     return {
       selected: "",
       mytrue: true,
-      myfalse: false
+      myfalse: false,
+      roomNumber: ""
     };
   },
   components: {
@@ -61,12 +63,17 @@ export default {
     mtHeader: Header,
     mtButton: Button,
     personal: personal,
-    shouye: shouye
+    shouye: shouye,
+    room: room
+  },
+  methods: {
+    skipRoomPage: function(value) {
+      this.roomNumber = value;
+      this.selected = "fangjian";
+    }
   },
   watch: {
-    selected: function() {
-      console.log(this.selected);
-    }
+    selected: function() {}
   },
   created: function() {
     this.selected = this.$common.homePage.selected;

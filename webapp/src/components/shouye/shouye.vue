@@ -83,6 +83,10 @@ export default {
         MessageBox.prompt("请输入房间号").then(async ({ value, action }) => {
           //用户点击了提示框的确认按钮
           if (action === "confirm") {
+            Indicator.open({
+              text: "正在进入房间",
+              spinnerType: "triple-bounce"
+            });
             let goResult = await axios({
               url: _this.$common.url.host + _this.$common.url.roomGo,
               method: "POST",
@@ -91,7 +95,25 @@ export default {
               },
               withCredentials: true
             });
-            console.log(goResult);
+            Indicator.close();
+
+            //进入房间失败
+            if (!goResult.data.success) {
+              Toast({
+                message: goResult.data.message,
+                position: "middle",
+                duration: 1000
+              });
+              return;
+            }
+            //进入房间成功
+            Toast({
+              message: goResult.data.message,
+              position: "middle",
+              duration: 1000
+            });
+            //进入房间成功-->发出跳转到房间页面事件
+            _this.$emit("skipRoomPage", value);
           }
         });
       }

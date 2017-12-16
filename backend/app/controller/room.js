@@ -7,6 +7,7 @@ class RoomController extends Controller {
     async index() {
         this.ctx.body = 'hi, egg';
     }
+    //创建房间
     async create() {
         //获得当前数据库中总共的房间数量
         const getRoomsLength = function () {
@@ -118,7 +119,7 @@ class RoomController extends Controller {
                     if (err) {
                         reject(err);
                     } else {
-                        resolve(res[0]);
+                        resolve(res);
                     }
                 })
             })
@@ -153,8 +154,21 @@ class RoomController extends Controller {
         let roomNumber = this.ctx.request.body.roomNumber;
         //根据房间号获取房间信息
         let roomResult = await findRoomByRoomNumber(roomNumber);
+        if (roomResult.length === 0) {
+            //查无此房间
+            this.ctx.body = { success: false, message: "没有找到该房间" }
+            return;
+        }
+        roomResult = roomResult[0];
         //保存原来的player信息，加入新的player信息
         let players = roomResult.players;
+        //判断该用户是否已经进入了该房间
+        for (let i = 0; i < players.length; i++) {
+            if (players[i].id === userResult.id) {
+                this.ctx.body = { success: true, message: "已经进入了此房间" }
+                return
+            }
+        }
         let newPlayer = {
             name: userResult.name,
             id: userResult.id,
@@ -167,6 +181,33 @@ class RoomController extends Controller {
         if (updatePlayerReuslt.ok !== 0) {
             this.ctx.body = { success: true, message: "成功进入房间" }
         }
+    }
+
+    //获取一个房间信息
+    async getInfo() {
+        //根据房间号获得房间信息
+        const getRoomInfo = function (roomNumber) {
+            return new Promise((resolve, reject) => {
+                roomSchema.find({ roomNumber: roomNumber }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+
+        const roomNumber = this.ctx.request.query.roomNumber;
+        let roomInfo = await getRoomInfo(roomNumber);
+        if (roomInfo.length === 0) {
+            //没有找到该房间
+            this.ctx.body = { success: false, message: "没有找到该房间" }
+            return;
+        }
+        //找到了该房间-->返回前端信息
+        roomInfo = roomInfo[0];
+        this.ctx.body = { success: true, message: "成功找到该房间", roomInfo: roomInfo }
     }
 }
 

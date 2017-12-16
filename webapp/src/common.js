@@ -28,6 +28,7 @@ export default {
                 userGetInfo: '/user/getInfo',
                 roomCreate: '/room/create',
                 roomGo: "/room/goRoom",
+                roomGetInfo: "/room/getInfo"
             },
             //跟据当前路由检查该页面是回退的还是前进
             urlName: {
