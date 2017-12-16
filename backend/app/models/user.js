@@ -1,5 +1,5 @@
 /*
-    图书馆书籍的表格
+    用户信息
 */
 const db = require('./db.js');
 Schema = db.Schema;
