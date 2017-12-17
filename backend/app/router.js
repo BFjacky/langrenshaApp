@@ -30,7 +30,13 @@ module.exports = app => {
 
   /**
    * 坐下座位
-   * room前端提交 房间号roomNumber:String，座位号seatNumber:Number，根据token获得用户信息     返回值:{success:Boolean,message:String}
+   * room前端提交 房间号roomNumber:String,座位号seatNumber:Number，根据token获得用户信息     返回值:{success:Boolean,message:String}
    */
   router.post("/room/sitHere", controller.room.sitHere)
+
+  /**
+   * 查看身份
+   * room前端提交 房间号roomNumber:String,根据token获得用户信息 返回值:{success:Boolean,message:String,role:String}
+   */
+  router.post("/room/checkRole", controller.room.checkRole)
 };

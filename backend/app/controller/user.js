@@ -1,5 +1,30 @@
 'use strict';
-
+const autoName = function () {
+    let name = "";
+    let autoNames = "杀狼人巫严卫白王宇代灵邴华辉候晨萱脱彭丹威驰丽匡欣畅宜海瑶端宏爽雍经艺尹溥心董依秋似星涵涤謇易真痕首昆皓澹台新梅行星晴乌访梦佟佳白云须德润俎和韵库乐章彦芝蒯德明曹元容季宇文慈香巧督云梦嬴流丽仉绍祺商向阳";
+    autoNames = autoNames.split("");
+    let number = Math.random().toFixed(2);
+    if (number >= 0.50) {
+        //三个字的姓名
+        for (let i = 0; i < 3; i++) {
+            number = Math.random().toFixed(2) * 100 + "";
+            number = number.slice(0, 2);
+            number = parseInt(number);
+            name += autoNames[number];
+        }
+        return name;
+    }
+    else {
+        //四个字的姓名
+        for (let i = 0; i < 4; i++) {
+            number = Math.random().toFixed(2) * 100 + "";
+            number = number.slice(0, 2);
+            number = parseInt(number);
+            name += autoNames[number];
+        }
+        return name;
+    }
+}
 const Controller = require('egg').Controller;
 const userSchema = require('../models/user.js')
 const idBegin = 10000000;
@@ -107,12 +132,14 @@ class UserController extends Controller {
             })
         }
         const saveUser = function (account, password) {
+            //生成一个名字
+            console.log()
             return new Promise(async (resolve, reject) => {
                 let all = await getUserNumber();
                 let mySchema = new userSchema({
                     account: account,
                     password: password,
-                    name: randomString(10),
+                    name: autoName(),
                     id: idBegin + all + "",
                 })
                 mySchema.save((err, res) => {

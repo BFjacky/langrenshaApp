@@ -4,13 +4,17 @@
           <div class="title">房间号:{{roomNumber}}</div>
       </div>
       <div class="seats">
-          <div class="seat" v-for="seatNumber in seatsNumber" v-on:click="sitHere(seatNumber)"></div>
+          <div class="seat" v-for="seatNumber in seatsNumber" v-on:click="sitHere(seatNumber)"">
+            <div class="number_text">{{seatNumber}}</div>
+            <div class="name_text">{{seats[seatNumber-1]===undefined?"":seats[seatNumber-1].name}}</div>
+          </div>
       </div>
   </div>
 </template>
 <script>
 import axios from "axios";
 import { Popup, Range, Switch, Toast, Indicator, MessageBox } from "mint-ui";
+
 export default {
   props: ["roomNumber"],
   data: function() {
@@ -41,6 +45,39 @@ export default {
         duration: 1000
       });
     }
+  },
+  mounted: async function() {
+    const _this = this;
+    /**@augments
+     * 轮询座位信息，先凑活一下
+     */
+    let instance = setInterval(async () => {
+      let roomResult = await axios({
+        url: _this.$common.url.host + _this.$common.url.roomGetInfo,
+        params: {
+          roomNumber: _this.roomNumber
+        },
+        method: "GET"
+      });
+      //请求成功
+      if (roomResult.data.success) {
+        let seats = [];
+        let roomInfo = roomResult.data.roomInfo;
+        //遍历数据中的players信息
+        for (let i = 0; i < roomInfo.players.length; i++) {
+          if (roomInfo.players[i].seatNumber != null) {
+            //此player已经坐下,保存在前端seats中
+            seats[roomInfo.players[i].seatNumber - 1] = {};
+            seats[roomInfo.players[i].seatNumber - 1].name =
+              roomInfo.players[i].name;
+            seats[roomInfo.players[i].seatNumber - 1].id =
+              roomInfo.players[i].id;
+          }
+        }
+        _this.seats = seats;
+      }
+      console.log(_this.seats);
+    }, 100);
   },
   watch: {
     //roomNumber变化，发送axios请求该房间的信息
@@ -95,12 +132,46 @@ export default {
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: center;
-  margin-top: 20px;
+  align-content: flex-start;
+  margin-top: 10px;
+  height: 65vh;
+  overflow: auto;
+  padding-bottom: 15px;
 }
 .seat {
-  width: 25vw;
-  height: 25vw;
-  border: 1px solid black;
+  width: 27vw;
+  height: 27vw;
+  box-sizing: border-box;
+  border: 0px solid black;
   margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background: radial-gradient(
+    circle,
+    rgba(153, 153, 102, 0.7),
+    rgb(153, 153, 102)
+  );
+  border-radius: 3vw;
+  padding: 1vw;
+}
+.seat:active {
+  background: radial-gradient(
+    circle,
+    rgba(153, 153, 102, 0.322),
+    rgba(153, 153, 102, 0.699)
+  );
+}
+.name_text {
+  color: rgba(235, 235, 235, 1);
+  font-size: 6vw;
+  width: 25vw;
+  overflow: hidden;
+  text-overflow:ellipse;
+  text-align:center;
+}
+.number_text {
+  font-size: 6vw;
 }
 </style>
