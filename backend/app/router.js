@@ -27,4 +27,10 @@ module.exports = app => {
    * room前端提交 房间号   roomNumber:String 返回值:{success:Boolean,message:String,roomInfo:Object}
    */
   router.get("/room/getInfo", controller.room.getInfo)
+
+  /**
+   * 坐下座位
+   * room前端提交 房间号roomNumber:String，座位号seatNumber:Number，根据token获得用户信息     返回值:{success:Boolean,message:String}
+   */
+  router.post("/room/sitHere", controller.room.sitHere)
 };

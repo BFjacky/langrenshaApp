@@ -16,18 +16,35 @@ export default {
   data: function() {
     return {
       //座位号
-      seatsNumber: []
+      seatsNumber: [],
+      //每个座位的seat内容{id:String,icon:String(src),name:String}
+      seats: []
     };
   },
   methods: {
-    sitHere: function(seatNumber) {
-      console.log(seatNumber);
+    sitHere: async function(seatNumber) {
+      const _this = this;
+      //发送后端，此人坐了此座位
+      let sitResult = await axios({
+        url: _this.$common.url.host + _this.$common.url.roomSitHere,
+        method: "POST",
+        withCredentials: true,
+        data: {
+          seatNumber: seatNumber,
+          roomNumber: _this.roomNumber
+        }
+      });
+
+      Toast({
+        message: sitResult.data.message,
+        position: "middle",
+        duration: 1000
+      });
     }
   },
   watch: {
     //roomNumber变化，发送axios请求该房间的信息
     roomNumber: async function() {
-      console.log("发送了请求");
       const _this = this;
       let InfoResult = await axios({
         url: _this.$common.url.host + _this.$common.url.roomGetInfo,
@@ -38,10 +55,11 @@ export default {
       });
       //座位编号数组
       let tempSeatsNumber = [];
-      for (let i = 0; i < InfoResult.data.roomInfo.players.length; i++) {
+      for (let i = 0; i < InfoResult.data.roomInfo.people_number; i++) {
         tempSeatsNumber[i] = i + 1;
       }
       this.seatsNumber = tempSeatsNumber;
+      console.log(InfoResult.data.roomInfo);
     }
   }
 };

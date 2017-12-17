@@ -209,6 +209,98 @@ class RoomController extends Controller {
         roomInfo = roomInfo[0];
         this.ctx.body = { success: true, message: "成功找到该房间", roomInfo: roomInfo }
     }
+
+    //坐下此座位
+    async sitHere() {
+        //根据房间号获得房间信息
+        const getRoomInfo = function (roomNumber) {
+            return new Promise((resolve, reject) => {
+                roomSchema.find({ roomNumber: roomNumber }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+        //根据账号查找用户信息
+        const finduserByAccount = function (account) {
+            return new Promise((resolve, reject) => {
+                userSchema.find({ account: account }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+        //将新的players信息更新到数据库中
+        const updatePlayers = function (roomNumber, players) {
+            return new Promise((resolve, reject) => {
+                roomSchema.update({ roomNumber: roomNumber }, { players: players }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+        console.log('有用户要坐下了')
+
+        const roomNumber = this.ctx.request.body.roomNumber;
+        const seatNumber = this.ctx.request.body.seatNumber;
+        
+        //未能获取到请求体信息
+        if (seatNumber == undefined || roomNumber == undefined) {
+            this.ctx.body = { success: false, message: "系统故障，请关掉app重新登陆" }
+            return;
+        }
+
+        //未能获得用户信息
+        if (this.ctx.user == undefined) {
+            this.ctx.body = { success: false, message: "请先登录再选座位" }
+            return;
+        }
+        let userResult = await finduserByAccount(this.ctx.user.account);
+        if (userResult.length === 0) {
+            this.ctx.body = { success: false, message: "请先登录再选座位" }
+            return;
+        }
+        //获得了用户信息
+        userResult = userResult[0];
+        //未能获得房间信息
+        let roomResult = await getRoomInfo(roomNumber);
+        if (roomResult.length === 0) {
+            this.ctx.body = { success: false, message: "该房间已过期" }
+            return;
+        }
+        //获得了房间信息
+        roomResult = roomResult[0];
+
+        //遍历房间信息中的player信息-->先判断有没有其他的player坐了这个座位号-->将对应的player的座位号填上
+        for (let i = 0; i < roomResult.players.length; i++) {
+            if (roomResult.players[i].seatNumber === seatNumber) {
+                this.ctx.body = { success: false, message: "该位置已经有人坐下了" };
+                return;
+            }
+        }
+        for (let i = 0; i < roomResult.players.length; i++) {
+            if (roomResult.players[i].id === userResult.id) {
+                roomResult.players[i].seatNumber = seatNumber;
+                console.log(roomResult.players[i])
+                //将新的room信息更新到数据库中
+                let updateResult = await updatePlayers(roomNumber, roomResult.players)
+
+                console.log(roomResult.players)
+                this.ctx.body = { success: true, message: "成功坐下" };
+                return;
+            }
+        }
+
+    }
 }
 
 module.exports = RoomController;
