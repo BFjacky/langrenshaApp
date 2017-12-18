@@ -8,10 +8,10 @@
       </div>
       <mt-popup v-model="newRoom" popup-transition="popup-fade" position='bottom' class="popup_up" v-bind:class="{popup_down:!newRoom}">
           <div class="rangeBox">
-            <div class="title">村民数量:{{cm_number}}</div><mt-range class="rangeLine" v-model="cm_number" :min="1" :max="9" :step="1" :bar-height="5"> </mt-range>
+            <div class="title">村民数量:{{cm_number}}</div><mt-range class="rangeLine" v-model="cm_number" :min="0" :max="9" :step="1" :bar-height="5"> </mt-range>
           </div>
           <div class="rangeBox">
-            <div class="title">狼人数量:{{lr_number}}</div><mt-range class="rangeLine" v-model="lr_number" :min="1" :max="9" :step="1" :bar-height="5"> </mt-range>
+            <div class="title">狼人数量:{{lr_number}}</div><mt-range class="rangeLine" v-model="lr_number" :min="0" :max="9" :step="1" :bar-height="5"> </mt-range>
           </div>
           <div class="rangeBox">
             <div class="title2">预言家</div><mt-switch class="switch" v-model="yvyanjia"></mt-switch>
@@ -58,8 +58,8 @@ export default {
       zrsShow: false,
 
       newRoom: false,
-      cm_number: 1,
-      lr_number: 1,
+      cm_number: 0,
+      lr_number: 0,
       yvyanjia: false,
       nvwu: false,
       lieren: false,

@@ -8,7 +8,7 @@ import gamerule from '@/components/personal/gamerule'
 import loginPage from '@/components/personal/loginPage'
 import signin from '@/components/personal/signin'
 
-import card from '@/components/shouye/card'
+import card from '@/components/room/roleCard'
 Vue.use(Router)
 
 export default new Router({

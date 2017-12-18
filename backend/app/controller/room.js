@@ -248,7 +248,7 @@ class RoomController extends Controller {
                 })
             })
         }
-        console.log('有用户要坐下了')
+
 
         const roomNumber = this.ctx.request.body.roomNumber;
         const seatNumber = this.ctx.request.body.seatNumber;
@@ -279,7 +279,6 @@ class RoomController extends Controller {
         }
         //获得了房间信息
         roomResult = roomResult[0];
-
         //遍历房间信息中的player信息-->先判断有没有其他的player坐了这个座位号-->将对应的player的座位号填上
         for (let i = 0; i < roomResult.players.length; i++) {
             if (roomResult.players[i].seatNumber === seatNumber) {
@@ -287,90 +286,154 @@ class RoomController extends Controller {
                 return;
             }
         }
+
         for (let i = 0; i < roomResult.players.length; i++) {
+            //判断该玩家是否已经进入房间
             if (roomResult.players[i].id === userResult.id) {
                 roomResult.players[i].seatNumber = seatNumber;
-                console.log(roomResult.players[i])
                 //将新的room信息更新到数据库中
                 let updateResult = await updatePlayers(roomNumber, roomResult.players)
                 this.ctx.body = { success: true, message: "成功坐下" };
 
 
                 //获得最新的players信息-->玩家已经坐满,为他们分发角色
-                roomResult = await getRoomInfo(roomNumber);
-                console.log('here')
-                if (roomResult.players.length === roomResult.people_number) {
-                    //将所有的角色放进数组中
-                    let roles = [];
-                    console.log(roles)
-                    let index = 0;
-                    for (let i = 0; i < roomResult.cm_number; i++) {
-                        roles[index] = "cunmin";
-                        index++;
+                //判断是否每个进入房间的玩家都坐下了
+                for (let i = 0; i < roomResult.players.length; i++) {
+                    if (roomResult.players[i].seatNumber == null) {
+                        return;
                     }
-                    for (let i = 0; i < roomResult.lr_number; i++) {
-                        roles[index] = "langren";
-                        index++;
-                    }
-                    for (let i = 0; i < roomResult.yvyanjia; i++) {
-                        roles[index] = "yvyanjia";
-                        index++;
-                    }
-                    for (let i = 0; i < roomResult.nvwu; i++) {
-                        roles[index] = "nvwu";
-                        index++;
-                    }
-                    for (let i = 0; i < roomResult.lieren; i++) {
-                        roles[index] = "lieren";
-                        index++;
-                    }
-                    for (let i = 0; i < roomResult.shouwei; i++) {
-                        roles[index] = "shouwei";
-                        index++;
-                    }
-                    for (let i = 0; i < roomResult.baichi; i++) {
-                        roles[index] = "baichi";
-                        index++;
-                    }
-                    for (let i = 0; i < roomResult.qishi; i++) {
-                        roles[index] = "qishi";
-                        index++;
-                    }
-                    for (let i = 0; i < roomResult.bailangwang; i++) {
-                        roles[index] = "bailangwang";
-                        index++;
-                    }
-                    //遍历players信息，为分配角色           
-                    function randomGet(arr) {
-                        let number = Math.random() * arr.length + "";
-                        number = number.split(".")[0];
-                        number = parseInt(number);
-                        let value = arr[number];
-                        let arr1 = [];
-                        let arr2 = [];
-                        arr1 = arr.slice(0, number);
-                        arr2 = arr.slice(number + 1, arr.length);
-                        arr = arr1.concat(arr2);
-                        return [value, arr]
-                    }
-                    for (let i = 0; i < roomResult.players.length; i++) {
-                        let result = randomGet(roles);
-                        roles = result[1];
-                        roomResult.players[i].role = result[0];
-                    }
-                    //分配完角色重新放回数据库
-                    let updateResult = await updatePlayers(roomNumber, roomResult.players)
                 }
+                console.log('所有人都坐下了')
+                roomResult = await getRoomInfo(roomNumber);
+                roomResult = roomResult[0]
+                console.log(roomResult.players)
+
+                //将所有的角色放进数组中
+                let roles = [];
+                let index = 0;
+                for (let i = 0; i < roomResult.cm_number; i++) {
+                    roles[index] = "cunmin";
+                    index++;
+                }
+                for (let i = 0; i < roomResult.lr_number; i++) {
+                    roles[index] = "langren";
+                    index++;
+                }
+                for (let i = 0; i < roomResult.yvyanjia; i++) {
+                    roles[index] = "yvyanjia";
+                    index++;
+                }
+                for (let i = 0; i < roomResult.nvwu; i++) {
+                    roles[index] = "nvwu";
+                    index++;
+                }
+                for (let i = 0; i < roomResult.lieren; i++) {
+                    roles[index] = "lieren";
+                    index++;
+                }
+                for (let i = 0; i < roomResult.shouwei; i++) {
+                    roles[index] = "shouwei";
+                    index++;
+                }
+                for (let i = 0; i < roomResult.baichi; i++) {
+                    roles[index] = "baichi";
+                    index++;
+                }
+                for (let i = 0; i < roomResult.qishi; i++) {
+                    roles[index] = "qishi";
+                    index++;
+                }
+                for (let i = 0; i < roomResult.bailangwang; i++) {
+                    roles[index] = "bailangwang";
+                    index++;
+                }
+                //遍历players信息，为分配角色           
+                function randomGet(arr) {
+                    let number = Math.random() * arr.length + "";
+                    number = number.split(".")[0];
+                    number = parseInt(number);
+                    let value = arr[number];
+                    let arr1 = [];
+                    let arr2 = [];
+                    arr1 = arr.slice(0, number);
+                    arr2 = arr.slice(number + 1, arr.length);
+                    arr = arr1.concat(arr2);
+                    return [value, arr]
+                }
+                for (let i = 0; i < roomResult.players.length; i++) {
+                    let result = randomGet(roles);
+                    roles = result[1];
+                    roomResult.players[i].role = result[0];
+                }
+                //分配完角色重新放回数据库
+                updateResult = await updatePlayers(roomNumber, roomResult.players)
                 return;
             }
         }
-
+        return;
     }
-
-    //查看身份
     async checkRole() {
+        //根据房间号查找数据库中的房间信息
+        const findRoomByRoomNumber = function (roomNumber) {
+            return new Promise((resolve, reject) => {
+                roomSchema.find({ roomNumber: roomNumber }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+        //根据账号查询用户
+        const findIdByAccount = function (account) {
+            return new Promise((resolve, reject) => {
+                userSchema.find({ account: account }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+        const roomNumber = this.ctx.request.body.roomNumber;
+        const userAccount = this.ctx.user.account;
+        if (roomNumber == undefined || userAccount == undefined) {
+            this.ctx.body = { success: false, message: "用户身份信息不完整", role: "" }
+            return;
+        }
 
+        let roomInfo = await findRoomByRoomNumber(roomNumber);
+        let user = await findIdByAccount(userAccount);
+        if (roomInfo.length === 0 || user.length === 0) {
+            this.ctx.body = { success: false, message: "未能找到此用户或此房间", role: "" }
+            return;
+        }
+
+        roomInfo = roomInfo[0];
+        user = user[0];
+        //遍历查询该房间中用户的信息
+        for (let i = 0; i < roomInfo.players.length; i++) {
+            //找到该用户
+            if (roomInfo.players[i].id === user.id) {
+                //该玩家没有被分配身份
+                if (roomInfo.players[i].role == null) {
+                    this.ctx.body = { success: false, message: "请等所有玩家坐下，再次查看身份", role: "" }
+                    return;
+                }
+                else {
+                    this.ctx.body = { success: true, message: "成功获取身份", role: roomInfo.players[i].role }
+                    return;
+                }
+            }
+        }
+
+        //没有在房间中找到该玩家
+        this.ctx.body = { success: false, message: "请重新该进入房间", role: "" }
+        return;
     }
 }
+
 
 module.exports = RoomController;

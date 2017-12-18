@@ -9,20 +9,34 @@
             <div class="name_text">{{seats[seatNumber-1]===undefined?"":seats[seatNumber-1].name}}</div>
           </div>
       </div>
+      <div class="btn_box">
+        <div class="btn">使用技能</div>
+        <div class="btn" v-on:touchstart="checkRole">查看身份</div>
+        <div class="btn">投票处决</div>
+      </div>
+      <role-card v-bind:role="role" class="roleCard" v-bind:class="{comeIn:fadeIn,comeOut:fadeOut}"></role-card>
   </div>
 </template>
 <script>
 import axios from "axios";
 import { Popup, Range, Switch, Toast, Indicator, MessageBox } from "mint-ui";
-
+import roleCard from "./roleCard";
 export default {
   props: ["roomNumber"],
+  components: {
+    roleCard: roleCard
+  },
   data: function() {
     return {
       //座位号
       seatsNumber: [],
       //每个座位的seat内容{id:String,icon:String(src),name:String}
-      seats: []
+      seats: [],
+      //该玩家身份
+      role: "",
+      //卡片淡入淡出效果
+      fadeIn: false,
+      fadeOut: true
     };
   },
   methods: {
@@ -44,6 +58,45 @@ export default {
         position: "middle",
         duration: 1000
       });
+    },
+    //checkRole点击事件，查看身份
+    checkRole: async function() {
+      const _this = this;
+      //还没有获得身份
+      if (_this.role == "") {
+        let roleResult = await axios({
+          url: _this.$common.url.host + _this.$common.url.roomCheckRole,
+          method: "POST",
+          withCredentials: true,
+          data: {
+            roomNumber: _this.roomNumber
+          }
+        });
+        roleResult = roleResult.data;
+        if (!roleResult.success) {
+          //未能获取身份
+          Toast({
+            message: roleResult.message,
+            position: "middle",
+            duration: 1000
+          });
+          return;
+        }
+        //获取身份
+        _this.role = roleResult.role;
+      }
+      //已经有身份了
+      if (_this.role != "") {
+        //淡入
+        _this.fadeOut = false;
+        _this.fadeIn = true;
+        //2秒后淡出
+        setTimeout(() => {
+          _this.fadeIn = false;
+          _this.fadeOut = true;
+        }, 2000);
+        return;
+      }
     }
   },
   mounted: async function() {
@@ -139,8 +192,8 @@ export default {
   padding-bottom: 15px;
 }
 .seat {
-  width: 27vw;
-  height: 27vw;
+  width: 22vw;
+  height: 22vw;
   box-sizing: border-box;
   border: 0px solid black;
   margin-top: 20px;
@@ -165,13 +218,66 @@ export default {
 }
 .name_text {
   color: rgba(235, 235, 235, 1);
-  font-size: 6vw;
-  width: 25vw;
+  font-size: 5vw;
+  font-weight:500;
+  width: 20vw;
   overflow: hidden;
-  text-overflow:ellipse;
-  text-align:center;
+  text-overflow: ellipse;
+  text-align: center;
 }
 .number_text {
   font-size: 6vw;
+}
+.btn_box {
+  height: 10vh;
+  position: fixed;
+  bottom: 10vh;
+  border: 0px solid black;
+  box-sizing: border-box;
+  width: 100vw;
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  line-height: 10vh;
+  font-weight: 700;
+}
+.btn {
+  flex-grow: 1;
+}
+
+@keyframes comein {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes comeout {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+.comeIn {
+  animation: comein 0.3s forwards;
+  z-index: 1000;
+}
+.comeOut {
+  animation: comeout 0.3s forwards;
+  z-index: -1000;
+}
+.roleCard {
+  position: fixed;
+  width: 100vw;
+  height: 150vw;
+  top: 15vw;
+  left: 0;
 }
 </style>

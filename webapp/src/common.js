@@ -22,14 +22,15 @@ export default {
             },
             //url集合
             url: {
-                host: 'http://ccc.feit.me',
+                host: 'http://47.94.15.66:7001',
                 userSignin: '/user/signin',
                 userLogin: '/user/login',
                 userGetInfo: '/user/getInfo',
                 roomCreate: '/room/create',
                 roomGo: "/room/goRoom",
                 roomGetInfo: "/room/getInfo",
-                roomSitHere: "/room/sitHere"
+                roomSitHere: "/room/sitHere",
+                roomCheckRole: "/room/checkRole"
             },
             //跟据当前路由检查该页面是回退的还是前进
             urlName: {
