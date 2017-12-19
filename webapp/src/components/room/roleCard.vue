@@ -41,4 +41,10 @@ export default {
 .yvyanjia {
   background-image: url(../../assets/yvyanjia.png);
 }
+.bailangwang {
+  background-image: url(../../assets/bailangwang.png);
+}
+.qishi {
+  background-image: url(../../assets/qishi.png);
+}
 </style>

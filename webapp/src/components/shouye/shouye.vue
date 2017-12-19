@@ -203,6 +203,11 @@ export default {
         position: "middle",
         duration: 2000
       });
+
+      //收回弹出窗
+      this.newRoom = false;
+      //总人数牌子
+      this.zrsShow = false;
     }
   },
   watch: {
@@ -250,6 +255,7 @@ export default {
   background: linear-gradient(to bottom, rgb(0, 0, 0), rgba(0, 0, 0, 0.7));
 }
 .header {
+  margin-top: 5vh;
   height: 20vh;
   background: transparent;
   padding: 0;
@@ -266,7 +272,7 @@ export default {
   width: 90%;
 }
 .content {
-  margin-top: 15vh;
+  margin-top: 10vh;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;

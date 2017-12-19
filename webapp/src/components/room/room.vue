@@ -4,8 +4,8 @@
           <div class="title">房间号:{{roomNumber}}</div>
           <div class="tietu_title"></div>
       </div>
-      <div class="seats">
-          <div class="seat" v-for="seatNumber in seatsNumber" v-on:click="sitHere(seatNumber)"">
+      <div class="seats" v-bind:class="{seats_backimg:roomNumber===''}">
+          <div class="seat" v-for="seatNumber in seatsNumber" v-on:click="sitHere(seatNumber)">
             <div class="number_text">{{seatNumber}}</div>
             <div class="name_text">{{seats[seatNumber-1]===undefined?"":seats[seatNumber-1].name}}</div>
           </div>
@@ -15,7 +15,7 @@
         <div class="btn" v-on:touchstart="checkRole">查看身份</div>
         <div class="btn">投票处决</div>
       </div>
-      <role-card v-bind:role="role" class="roleCard" v-bind:class="{comeIn:fadeIn,comeOut:fadeOut}"></role-card>
+      <role-card v-bind:role="role" class="roleCard" v-bind:class="{comeIn:fadeIn,comeOut:fadeOut} "v-show="roleCardShow" v-on:animationend="rolecardEnd"></role-card>
   </div>
 </template>
 <script>
@@ -38,6 +38,7 @@ export default {
       //卡片淡入淡出效果
       fadeIn: false,
       fadeOut: true,
+      roleCardShow: false,
 
       //room房间信息
       roomInfo: {}
@@ -62,6 +63,10 @@ export default {
         position: "middle",
         duration: 1000
       });
+    },
+    //rolecard animationEnd =>>v-show = false
+    rolecardEnd: function() {
+      this.roleCardShow = false;
     },
     //checkRole点击事件，查看身份
     checkRole: async function() {
@@ -92,6 +97,7 @@ export default {
       //已经有身份了
       if (_this.role != "") {
         //淡入
+        _this.roleCardShow = true;
         _this.fadeOut = false;
         _this.fadeIn = true;
         //2秒后淡出
@@ -209,9 +215,11 @@ export default {
   align-items: center;
   align-content: flex-start;
   margin-top: 10px;
-  height: 65vh;
+  height: 60vh;
   overflow: auto;
   padding-bottom: 15px;
+}
+.seats_backimg {
   background-image: url(../../assets/ele/20.png);
   background-repeat: no-repeat;
   background-size: 100% 70%;
@@ -232,11 +240,7 @@ export default {
   box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.582);
 }
 .seat:active {
-  background: radial-gradient(
-    circle,
-    rgb(153, 153, 102),
-    rgb(153, 153, 102)
-  );
+  background: radial-gradient(circle, rgb(153, 153, 102), rgb(153, 153, 102));
 }
 .name_text {
   color: rgb(36, 36, 36);
