@@ -197,17 +197,44 @@ class RoomController extends Controller {
                 })
             })
         }
-
+        //wait阻塞一段时间
+        const wait = function (times) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve('ok')
+                }, times);
+            })
+        }
         const roomNumber = this.ctx.request.query.roomNumber;
+        const khdRoomInfo = this.ctx.request.query.roomInfo;
+
         let roomInfo = await getRoomInfo(roomNumber);
         if (roomInfo.length === 0) {
-            //没有找到该房间
+            //没有找到该房间,房间信息没有找到就等两秒再返回前端
+            await wait(2000);
             this.ctx.body = { success: false, message: "没有找到该房间" }
             return;
         }
         //找到了该房间-->返回前端信息
         roomInfo = roomInfo[0];
-        this.ctx.body = { success: true, message: "成功找到该房间", roomInfo: roomInfo }
+
+        /**
+         * 设置定时器,检查数据库中和客户端提交的roomInfo是否一致，不一致，则将最新信息返回给前端
+         * 判断对象相等:因为对象属性顺序没有改变，所以直接JSON转化字符串判断相等
+         */
+
+        while (true) {
+            if (khdRoomInfo === JSON.stringify(roomInfo)) {
+                //更新roominfo
+                roomInfo = await getRoomInfo(roomNumber);
+                roomInfo = roomInfo[0];
+            } else {
+                this.ctx.body = { success: true, message: "成功找到该房间", roomInfo: roomInfo }
+                console.log('返回了一次')
+                return;
+            }
+            await wait(10);
+        }
     }
 
     //坐下此座位
@@ -299,7 +326,8 @@ class RoomController extends Controller {
                 //获得最新的players信息-->玩家已经坐满,为他们分发角色
                 //判断是否每个进入房间的玩家都坐下了
                 for (let i = 0; i < roomResult.players.length; i++) {
-                    if (roomResult.players[i].seatNumber == null) {
+                    //有人没坐下或房间没进满
+                    if (roomResult.players[i].seatNumber == null || roomResult.players.length !== roomResult.people_number) {
                         return;
                     }
                 }

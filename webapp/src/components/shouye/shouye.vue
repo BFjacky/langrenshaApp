@@ -67,7 +67,7 @@ export default {
       baichi: false,
       qishi: false,
       bailangwang: false,
-      people_number: 2
+      people_number: 0
     };
   },
   methods: {

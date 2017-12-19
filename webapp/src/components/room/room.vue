@@ -36,7 +36,10 @@ export default {
       role: "",
       //卡片淡入淡出效果
       fadeIn: false,
-      fadeOut: true
+      fadeOut: true,
+
+      //room房间信息
+      roomInfo: {}
     };
   },
   methods: {
@@ -101,41 +104,17 @@ export default {
   },
   mounted: async function() {
     const _this = this;
-    /**@augments
-     * 轮询座位信息，先凑活一下
-     */
-    let instance = setInterval(async () => {
-      let roomResult = await axios({
-        url: _this.$common.url.host + _this.$common.url.roomGetInfo,
-        params: {
-          roomNumber: _this.roomNumber
-        },
-        method: "GET"
-      });
-      //请求成功
-      if (roomResult.data.success) {
-        let seats = [];
-        let roomInfo = roomResult.data.roomInfo;
-        //遍历数据中的players信息
-        for (let i = 0; i < roomInfo.players.length; i++) {
-          if (roomInfo.players[i].seatNumber != null) {
-            //此player已经坐下,保存在前端seats中
-            seats[roomInfo.players[i].seatNumber - 1] = {};
-            seats[roomInfo.players[i].seatNumber - 1].name =
-              roomInfo.players[i].name;
-            seats[roomInfo.players[i].seatNumber - 1].id =
-              roomInfo.players[i].id;
-          }
-        }
-        _this.seats = seats;
-      }
-      console.log(_this.seats);
-    }, 100);
   },
   watch: {
     //roomNumber变化，发送axios请求该房间的信息
     roomNumber: async function() {
+      //初始化房间，恢复空房状态
       const _this = this;
+      this.seats = [];
+      this.roomInfo = {};
+      this.role = "";
+      console.log("初始化房间");
+
       let InfoResult = await axios({
         url: _this.$common.url.host + _this.$common.url.roomGetInfo,
         method: "GET",
@@ -149,7 +128,41 @@ export default {
         tempSeatsNumber[i] = i + 1;
       }
       this.seatsNumber = tempSeatsNumber;
-      console.log(InfoResult.data.roomInfo);
+
+      /**@augments
+     * 长轮询座位信息，先凑活一下,
+     */
+      while (true) {
+        let roomResult = await axios({
+          url: _this.$common.url.host + _this.$common.url.roomGetInfo,
+          params: {
+            roomNumber: _this.roomNumber,
+            roomInfo: _this.roomInfo
+          },
+          method: "GET"
+        });
+        console.log("更新了一次", roomResult.data);
+        //请求成功
+        if (roomResult.data.success) {
+          //更新前端页面数据
+          _this.roomInfo = roomResult.data.roomInfo;
+
+          let seats = [];
+          let roomInfo = roomResult.data.roomInfo;
+          //遍历数据中的players信息
+          for (let i = 0; i < roomInfo.players.length; i++) {
+            if (roomInfo.players[i].seatNumber != null) {
+              //此player已经坐下,保存在前端seats中
+              seats[roomInfo.players[i].seatNumber - 1] = {};
+              seats[roomInfo.players[i].seatNumber - 1].name =
+                roomInfo.players[i].name;
+              seats[roomInfo.players[i].seatNumber - 1].id =
+                roomInfo.players[i].id;
+            }
+          }
+          _this.seats = seats;
+        }
+      }
     }
   }
 };
@@ -219,7 +232,7 @@ export default {
 .name_text {
   color: rgba(235, 235, 235, 1);
   font-size: 5vw;
-  font-weight:500;
+  font-weight: 500;
   width: 20vw;
   overflow: hidden;
   text-overflow: ellipse;
