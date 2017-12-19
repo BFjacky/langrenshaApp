@@ -20,30 +20,15 @@
         </div>
         <div class="buttonBar">
           <blockbutton v-on:clicklick="gotoNextPage" title="游戏规则" type=3></blockbutton>
-        </div>
-        
-        <div class="divide_line"></div>
-       
+        </div>    
         <div class="buttonBar">
-          <blockbutton title="分享给好友"type=3></blockbutton>
+          <blockbutton title="分享给好友"type=4></blockbutton>
         </div>
         <div class="buttonBar">
-          <blockbutton title="游戏规则"type=1></blockbutton>
+          <blockbutton title="开发者"type=5></blockbutton>        
         </div>
         <div class="buttonBar">
-          <blockbutton title="游戏规则"type=2></blockbutton>        
-        </div>
-
-        <div class="divide_line"></div>
-
-        <div class="buttonBar">
-          <blockbutton title="游戏规则"type=2></blockbutton>
-        </div>
-        <div class="buttonBar">
-          <blockbutton title="游戏规则"type=3></blockbutton>
-        </div>
-        <div class="buttonBar">
-          <blockbutton title="开发者"type=1></blockbutton>        
+          <blockbutton title=""type=6></blockbutton>        
         </div>
 
       </div>
@@ -132,9 +117,9 @@ export default {
   height: 20vh;
   border: 0px solid black;
   background: linear-gradient(
-    to top,
-    rgba(195, 241, 245, 0.5),
-    rgba(71, 229, 241, 0.7)
+    to bottom,
+    rgba(255, 255, 255, 0.9),
+    rgba(230, 230, 230, 0.7)
   );
   /*background-image: url(../../assets/yuncai.png);*/
   background-size: 100%;
@@ -145,15 +130,17 @@ export default {
 .touxiang_icon {
   width: 75px;
   height: 75px;
-  border: 1px solid #b6c4bd;
+  border: 0px solid #000000;
   border-radius: 50%;
   margin-left: 20px;
+  box-shadow: 0px 0px 1px 2px rgb(224, 224, 224);
 }
 .text {
-  color: #b6c4bd;
+  color: #000000;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  font-weight: 700;
   margin-left: 3%;
 }
 .text_h4 {

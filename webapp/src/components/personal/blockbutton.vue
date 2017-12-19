@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     buttonClick: function() {
-      this.$emit('clicklick',this.title);
+      this.$emit("clicklick", this.title);
     },
     touchstart: function() {
       this.status = "beSmall";
@@ -58,30 +58,33 @@ export default {
   justify-content: center;
   align-items: center;
   border-radius: 25%;
-  box-shadow: 0px 0px 5px 2px rgba(200, 204, 204, 0.3);
+  /* box-shadow: 0px 0px 1px 1px rgba(200, 204, 204, 0.3); */
 }
 .color1 {
-  background: radial-gradient(
-    circle,
-    rgba(128, 219, 248, 0.7),
-    rgba(24, 207, 220, 0.7)
-  );
+  background-image: url(../../assets/ele/23.png);
+  background-size: 100% 100%;
+  opacity: 0.8;
 }
 .color2 {
-  background: radial-gradient(
-    circle,
-    rgba(248, 209, 118, 0.7),
-    rgba(239, 173, 20, 0.7)
-  );
+  background-image: url(../../assets/ele/24.png);
+  background-size: 100% 100%;
+  opacity: 0.8;
 }
 .color3 {
-  background: radial-gradient(
-    circle,
-    rgba(164, 249, 210, 0.7),
-    rgba(37, 251, 151, 0.7)
-  );
+  background-image: url(../../assets/ele/25.png);
+  background-size: 100% 100%;
+  opacity: 0.8;
 }
-
+.color4 {
+  background-image: url(../../assets/ele/28.png);
+  background-size: 100% 100%;
+  opacity: 0.8;
+}
+.color5 {
+  background-image: url(../../assets/ele/27.png);
+  background-size: 100% 100%;
+  opacity: 0.8;
+}
 .buttonIcon {
   height: 60%;
   width: 60%;

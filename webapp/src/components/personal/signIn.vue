@@ -120,9 +120,9 @@ export default {
   display: flex;
   flex-direction: column;
   background: linear-gradient(
-    to left top,
-    rgba(71, 229, 241, 0.7),
-    rgba(195, 241, 245, 0.5)
+    to bottom,
+    rgba(255, 255, 255, 0.7),
+    rgba(206, 204, 204, 0.5)
   );
 }
 .inputBox {
@@ -134,11 +134,17 @@ export default {
 }
 .myinput {
   border-width: 0px;
-  border-bottom: 1px rgb(190, 137, 216) solid;
+  border-bottom: 1px rgb(0, 0, 0) solid;
   background: rgba(0, 0, 0, 0);
+  color: rgb(0, 0, 0);
   margin-top: 5vh;
   font-size: 18px;
   outline: none;
+}
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  /* WebKit*/
+  color: rgba(0, 0, 0, 0.582);
 }
 .function {
   display: flex;
@@ -161,8 +167,8 @@ export default {
   padding-left: 10px;
   background: linear-gradient(
     to bottom,
-    rgba(190, 137, 216, 0.2),
-    rgba(114, 109, 209, 0.5)
+    rgba(61, 61, 61, 0.2),
+    rgba(34, 34, 34, 0.5)
   );
 }
 </style>

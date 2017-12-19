@@ -425,6 +425,10 @@ class RoomController extends Controller {
                 })
             })
         }
+        if (this.ctx.user === undefined) {
+            this.ctx.body = { success: false, message: "请先登录", role: "" }
+            return;
+        }
         const roomNumber = this.ctx.request.body.roomNumber;
         const userAccount = this.ctx.user.account;
         if (roomNumber == undefined || userAccount == undefined) {

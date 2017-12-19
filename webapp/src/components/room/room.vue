@@ -2,6 +2,7 @@
   <div class='room'>
       <div class="header">
           <div class="title">房间号:{{roomNumber}}</div>
+          <div class="tietu_title"></div>
       </div>
       <div class="seats">
           <div class="seat" v-for="seatNumber in seatsNumber" v-on:click="sitHere(seatNumber)"">
@@ -174,8 +175,15 @@ export default {
 }
 .title {
   font-size: 8vw;
-  color: rgb(233, 233, 233);
+  color: rgb(0, 0, 0);
   margin-left: 5vw;
+}
+.tietu_title {
+  background-image: url(../../assets/ele/21.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  width: 40vw;
+  height: 16vh;
 }
 .header {
   width: 100vw;
@@ -183,14 +191,15 @@ export default {
   border: 0px solid black;
   background: linear-gradient(
     to bottom,
-    rgba(172, 163, 2, 0.7),
-    rgba(226, 216, 26, 0.5)
+    rgba(226, 226, 226, 0.7),
+    rgba(255, 255, 255, 0.5)
   );
   /*background-image: url(../../assets/yuncai.png);*/
   background-size: 100%;
   display: flex;
   align-items: center;
-  box-shadow: 0px 1px 5px 0px rgba(200, 204, 204, 0.3);
+  box-shadow: 0px 0px 2px 3px rgba(228, 228, 228, 0.3);
+  justify-content: space-between;
 }
 .seats {
   width: 100vw;
@@ -203,6 +212,9 @@ export default {
   height: 65vh;
   overflow: auto;
   padding-bottom: 15px;
+  background-image: url(../../assets/ele/20.png);
+  background-repeat: no-repeat;
+  background-size: 100% 70%;
 }
 .seat {
   width: 22vw;
@@ -214,23 +226,20 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  background: radial-gradient(
-    circle,
-    rgba(153, 153, 102, 0.7),
-    rgb(153, 153, 102)
-  );
+  background: radial-gradient(circle, rgb(255, 255, 255), rgb(245, 255, 247));
   border-radius: 3vw;
   padding: 1vw;
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.582);
 }
 .seat:active {
   background: radial-gradient(
     circle,
-    rgba(153, 153, 102, 0.322),
-    rgba(153, 153, 102, 0.699)
+    rgb(153, 153, 102),
+    rgb(153, 153, 102)
   );
 }
 .name_text {
-  color: rgba(235, 235, 235, 1);
+  color: rgb(36, 36, 36);
   font-size: 5vw;
   font-weight: 500;
   width: 20vw;

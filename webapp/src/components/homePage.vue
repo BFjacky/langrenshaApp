@@ -101,5 +101,10 @@ export default {
   display: flex;
   justify-content: center;
   flex-direction: column;
+  background: linear-gradient(
+    to bottom,
+    rgba(185, 184, 184, 0.377),
+    rgba(221, 220, 220, 0.815)
+  );
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div class="shouye">
       <div class="header">
+        <div class="backimg"></div>
       </div>
       <div class="content">
           <card type="1" title="进入房间" class="card1" v-on:clicklick="clickCard"></card>
@@ -241,18 +242,31 @@ export default {
   width: 100vw;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(
+  /* background: linear-gradient(
     to bottom,
     rgba(204, 204, 153, 0.4),
     rgba(204, 204, 153, 0.7)
-  );
+  ); */
+  background: linear-gradient(to bottom, rgb(0, 0, 0), rgba(0, 0, 0, 0.7));
 }
 .header {
-  height: 30vh;
+  height: 20vh;
   background: transparent;
+  padding: 0;
+  /* background: linear-gradient(to bottom, rgb(0, 0, 0), rgba(0, 0, 0, 0.7)); */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.backimg {
+  background-image: url(../../assets/ele/16.png);
+  background-size: 100% 100%;
+  height: 90%;
+  width: 90%;
 }
 .content {
-  margin-top: 5vh;
+  margin-top: 15vh;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
@@ -302,7 +316,7 @@ export default {
   padding-right: 2vw;
   font-size: 5vw;
   margin-bottom: 1vh;
-  background-color: #99cc33;
+  background-color: #686868;
   color: #ffffff;
 }
 .rangeBox_confirm {
@@ -313,7 +327,7 @@ export default {
   padding-left: 2vw;
   padding-right: 2vw;
   font-size: 5vw;
-  background-color: #6a9a0b;
+  background-color: #3b3b3b;
   color: #ffffff;
   text-align: center;
   letter-spacing: 5px;
@@ -330,8 +344,9 @@ export default {
   width: 100vw;
   font-size: 10vw;
   font-weight: 700;
-  top: 15%;
+  top: 23%;
   text-align: center;
+  color: #dfd9d9;
 }
 
 .fadein {
