@@ -28,7 +28,7 @@
           <blockbutton title="开发者"type=5></blockbutton>        
         </div>
         <div class="buttonBar">
-          <blockbutton title=""type=6></blockbutton>        
+          <blockbutton title=""type=6 ></blockbutton>        
         </div>
 
       </div>
@@ -102,6 +102,15 @@ export default {
     blockbutton,
     mtPopup: Popup,
     personDetail
+  },
+  watch: {
+    name: function() {
+      if (this.name === undefined) {
+        //name字符串为空的时候，为其更新为请先登录
+        console.log("here");
+        this.name = "请先登录";
+      }
+    }
   }
 };
 </script>

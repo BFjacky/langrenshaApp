@@ -39,4 +39,18 @@ module.exports = app => {
    * room前端提交 房间号roomNumber:String,根据token获得用户信息 返回值:{success:Boolean,message:String,role:String}
    */
   router.post("/room/checkRole", controller.room.checkRole)
+
+
+  /**
+   * 发起投票
+   * room前端提交 房间号roomNumber:String,根据token获得用户信息 返回值:{success:Boolean,message:String}
+   */
+  router.post("/room/beginVote", controller.room.beginVote)
+
+
+  /**
+   * 投票处决某人
+   * room前端提交 房间号roomNumber:String,投票目标座位号:seatNumber:Number 根据token获得用户信息 返回值:{success:Boolean,message:String}
+   */
+  router.post("/room/voteKill", controller.room.voteKill)
 };

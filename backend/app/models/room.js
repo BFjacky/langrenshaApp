@@ -17,13 +17,18 @@ const roomSchema = new Schema(
         qishi: Number,//骑士数量
         bailangwang: Number,//白狼王数量
         masterId: String,//房主id
+        moment: String,//房间所处的阶段  langren  yvyanjia nvwu shouwei runingJZ voteJZ speak voteKill 
         players: Array,//所有玩家的id数组(包括房主的id)
+        votes: Array,//投票结果
+        nowVoteTime: Number,//当前投票轮次
+        countDown: Number, //当前倒计时所剩时间数字
         /**
          * player：{
          *      name:String, //用户昵称
          *      id:String,  //用户id
          *      role:String, //身份
          *      seatNumber:Number, //座位号
+         *      isDead:Boolean, //是否已经死亡
          * }
          */
     }, {

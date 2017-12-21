@@ -22,8 +22,8 @@ export default {
             },
             //url集合
             url: {
-                //host: "http://ccc.feit.me",
-                host: 'http://47.94.15.66:7001',
+                host: "http://ccc.feit.me",
+                //host: 'http://47.94.15.66:7001',
                 userSignin: '/user/signin',
                 userLogin: '/user/login',
                 userGetInfo: '/user/getInfo',
@@ -31,7 +31,9 @@ export default {
                 roomGo: "/room/goRoom",
                 roomGetInfo: "/room/getInfo",
                 roomSitHere: "/room/sitHere",
-                roomCheckRole: "/room/checkRole"
+                roomCheckRole: "/room/checkRole",
+                roomBeginVote: "/room/beginVote",
+                roomVoteKill: "/room/voteKill",
             },
             //跟据当前路由检查该页面是回退的还是前进
             urlName: {

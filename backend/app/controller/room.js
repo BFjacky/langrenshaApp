@@ -92,6 +92,8 @@ class RoomController extends Controller {
             qishi: qishi,//骑士数量
             bailangwang: bailangwang,//白狼王数量
             masterId: idResult,//房主id
+            moment: "speak",//默认speak阶段
+            nowVoteTime: 0,//当前投票轮次 设为0次
         })
 
         let saveReuslt = await saveInDB(myRoomSchema);
@@ -223,7 +225,9 @@ class RoomController extends Controller {
          * 判断对象相等:因为对象属性顺序没有改变，所以直接JSON转化字符串判断相等
          */
 
-        while (true) {
+        //设置最大循环次数
+        let times = 400;
+        while (times-- !== 0) {
             if (khdRoomInfo === JSON.stringify(roomInfo)) {
                 //更新roominfo
                 roomInfo = await getRoomInfo(roomNumber);
@@ -235,6 +239,10 @@ class RoomController extends Controller {
             }
             await wait(10);
         }
+
+        //请求超时返回一次
+        this.ctx.body = { success: false, message: "请求超时", roomInfo: roomInfo }
+        return;
     }
 
     //坐下此座位
@@ -464,6 +472,208 @@ class RoomController extends Controller {
         //没有在房间中找到该玩家
         this.ctx.body = { success: false, message: "请重新该进入房间", role: "" }
         return;
+    }
+    async beginVote() {
+        //wait阻塞一段时间
+        const wait = function (times) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve('ok')
+                }, times);
+            })
+        }
+        //根据房间号更新倒计时时间
+        const updateCountByRoomNumber = function (roomNumber, countDown) {
+            return new Promise((resolve, reject) => {
+                roomSchema.update({ roomNumber: roomNumber }, { countDown: countDown }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+        //根据房间号更新阶段信息，当前投票轮次信息
+        const updateMomentByRoomNumber = function (roomNumber, moment, nowVoteTime) {
+            return new Promise((resolve, reject) => {
+                roomSchema.update({ roomNumber: roomNumber }, { moment: moment, nowVoteTime: nowVoteTime }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+        //根据房间号查找数据库中的房间信息
+        const findRoomByRoomNumber = function (roomNumber) {
+            return new Promise((resolve, reject) => {
+                roomSchema.find({ roomNumber: roomNumber }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+        //根据账号查询用户
+        const findIdByAccount = function (account) {
+            return new Promise((resolve, reject) => {
+                userSchema.find({ account: account }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+        if (this.ctx.user === undefined) {
+            this.ctx.body = { success: false, message: "请先登录" }
+            return;
+        }
+        const roomNumber = this.ctx.request.body.roomNumber;
+        const userAccount = this.ctx.user.account;
+        if (roomNumber == undefined || userAccount == undefined) {
+            this.ctx.body = { success: false, message: "用户身份信息不完整" }
+            return;
+        }
+
+        let roomInfo = await findRoomByRoomNumber(roomNumber);
+        let user = await findIdByAccount(userAccount);
+        if (roomInfo.length === 0 || user.length === 0) {
+            this.ctx.body = { success: false, message: "未能找到此用户或此房间" }
+            return;
+        }
+
+        roomInfo = roomInfo[0];
+        user = user[0];
+
+        //此用户不为房主不可发起投票
+        console.log(user, roomInfo);
+        if (user.id !== roomInfo.masterId) {
+            this.ctx.body = { success: false, message: "你不是房主不能发起投票" }
+            return;
+        }
+        //已经发起过投票了
+        if (roomInfo.moment === "voteKill") {
+            this.ctx.body = { success: false, message: "已经发起过投票了" }
+            return;
+        }
+        //未到投票阶段不可投票
+        if (roomInfo.moment !== "speak") {
+            this.ctx.body = { success: false, message: "未到发起投票的时间" }
+            return;
+        }
+
+        //房主发起投票，修改本地房间数据库
+        let nowVoteTime = roomInfo.nowVoteTime + 1;
+        let updateMoment = await updateMomentByRoomNumber(roomNumber, "voteKill", nowVoteTime);
+
+        this.ctx.body = { success: true, message: "已发起投票" };
+
+        //开始启动倒计时修改数据库,倒计时时间30s
+        let times = 32;
+        for (let i = times; i >= -3; i--) {
+            await updateCountByRoomNumber(roomNumber, i);
+            await wait(1000);
+        }
+
+        //投票结束，回到初始状态
+        await updateCountByRoomNumber(roomNumber, null);
+        await updateMomentByRoomNumber(roomNumber, "speak");
+        return;
+
+    }
+
+    async voteKill() {
+        //根据房间号查找数据库中的房间信息
+        const findRoomByRoomNumber = function (roomNumber) {
+            return new Promise((resolve, reject) => {
+                roomSchema.find({ roomNumber: roomNumber }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+        //根据账号查询用户
+        const findUserByAccount = function (account) {
+            return new Promise((resolve, reject) => {
+                userSchema.find({ account: account }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+        //跟新该用户的投票信息
+        const updateVotes = function (roomNumber, votes) {
+            return new Promise((resolve, reject) => {
+                roomSchema.update({ roomNumber: roomNumber }, { votes: votes }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+
+        if (this.ctx.user === undefined) {
+            this.ctx.body = { success: false, message: "请先登录" }
+            return;
+        }
+        const roomNumber = this.ctx.request.body.roomNumber;
+        const userAccount = this.ctx.user.account;
+        //被票者座位号
+        const seatNumber = this.ctx.request.body.seatNumber;
+        if (roomNumber == undefined || userAccount == undefined) {
+            this.ctx.body = { success: false, message: "用户身份信息不完整" }
+            return;
+        }
+
+        let roomInfo = await findRoomByRoomNumber(roomNumber);
+        let user = await findUserByAccount(userAccount);
+        if (roomInfo.length === 0 || user.length === 0) {
+            this.ctx.body = { success: false, message: "未能找到此用户或此房间" }
+            return;
+        }
+
+        roomInfo = roomInfo[0];
+        user = user[0];
+        //投票者座位号
+        let hostSeatNumber;
+        for (let i = 0; i < roomInfo.players.length; i++) {
+            if (roomInfo.players[i].id === user.id) {
+                //找到投票人
+                hostSeatNumber = roomInfo.players[i].seatNumber;
+                break;
+            }
+        }
+
+
+        //将此次投票信息记录下来
+        roomInfo = await findRoomByRoomNumber(roomNumber);
+        roomInfo = roomInfo[0];
+        roomInfo.votes[roomInfo.nowVoteTime] === undefined ? roomInfo.votes[roomInfo.nowVoteTime] = "" : roomInfo.votes[roomInfo.nowVoteTime];
+        roomInfo.votes[roomInfo.nowVoteTime] = roomInfo.votes[roomInfo.nowVoteTime] + hostSeatNumber + "->" + seatNumber + ",";
+        let updateVotesResult = await updateVotes(roomNumber, roomInfo.votes[roomInfo.nowVoteTime]);
+        console.log(updateVotesResult);
+        if (updateVotesResult.ok === 1) {
+            this.ctx.body = { success: true, message: "投票成功" }
+            return;
+        }
+
+        this.ctx.body = { success: false, message: "未知错误" }
+        return;
+
     }
 }
 

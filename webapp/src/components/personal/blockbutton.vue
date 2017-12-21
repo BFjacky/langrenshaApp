@@ -58,32 +58,35 @@ export default {
   justify-content: center;
   align-items: center;
   border-radius: 25%;
-  /* box-shadow: 0px 0px 1px 1px rgba(200, 204, 204, 0.3); */
+  box-shadow: 0px 0px 2px 2px rgba(200, 204, 204, 0.3);
 }
 .color1 {
-  background-image: url(../../assets/ele/23.png);
+  background-image: url(../../assets/ele/31.png);
   background-size: 100% 100%;
   opacity: 0.8;
 }
 .color2 {
-  background-image: url(../../assets/ele/24.png);
+  background-image: url(../../assets/ele/32.png);
   background-size: 100% 100%;
   opacity: 0.8;
 }
 .color3 {
-  background-image: url(../../assets/ele/25.png);
+  background-image: url(../../assets/ele/33.png);
   background-size: 100% 100%;
   opacity: 0.8;
 }
 .color4 {
-  background-image: url(../../assets/ele/28.png);
+  background-image: url(../../assets/ele/29.png);
   background-size: 100% 100%;
   opacity: 0.8;
 }
 .color5 {
-  background-image: url(../../assets/ele/27.png);
+  background-image: url(../../assets/ele/30.png);
   background-size: 100% 100%;
   opacity: 0.8;
+}
+.color6{
+   box-shadow: 0px 0px 0px 0px rgba(200, 204, 204, 0.3);
 }
 .buttonIcon {
   height: 60%;

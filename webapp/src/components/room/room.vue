@@ -1,5 +1,6 @@
 <template>
   <div class='room'>
+         <div class="title_count" v-bind:class="{comeIn:countIn,comeOut:countOut}">{{roomInfo.countDown}}</div>
       <div class="header">
           <div class="title">房间号:{{roomNumber}}</div>
           <div class="tietu_title"></div>
@@ -13,7 +14,14 @@
       <div class="btn_box">
         <div class="btn">使用技能</div>
         <div class="btn" v-on:touchstart="checkRole">查看身份</div>
-        <div class="btn">投票处决</div>
+        <div class="btn" v-on:click="voteButton">投票处决</div>
+        <div class="hideButton"></div>
+        <div class="hideButton"></div>
+        <div class="hideButton">
+          <div class="btn_son" v-bind:class="btn_son1_status" v-on:click="beginVote">发起投票</div>
+          <div class="btn_son" v-bind:class="btn_son2_status" v-on:click="checkVotes">查看票型</div>
+          <div class="btn_son" v-bind:class="btn_son3_status" v-on:click="killVote">投票处决</div>
+        </div>
       </div>
       <role-card v-bind:role="role" class="roleCard" v-bind:class="{comeIn:fadeIn,comeOut:fadeOut} "v-show="roleCardShow" v-on:animationend="rolecardEnd"></role-card>
   </div>
@@ -25,7 +33,8 @@ import roleCard from "./roleCard";
 export default {
   props: ["roomNumber"],
   components: {
-    roleCard: roleCard
+    roleCard: roleCard,
+    MessageBox: MessageBox
   },
   data: function() {
     return {
@@ -41,12 +50,52 @@ export default {
       roleCardShow: false,
 
       //room房间信息
-      roomInfo: {}
+      roomInfo: {},
+
+      //倒计时牌子淡入淡出的动画
+      countIn: false,
+      countOut: false,
+
+      //btn弹出框，动画
+      btn_son1_status: "",
+      btn_son2_status: "",
+      btn_son3_status: "",
+
+      //投票处决相关数据
+      isVoting: false,
+      choise_seatNumber: undefined
     };
+    i;
   },
   methods: {
     sitHere: async function(seatNumber) {
       const _this = this;
+      //处于投票阶段,阻塞坐座位请求，只选中座位
+      if (this.isVoting) {
+        this.choise_seatNumber = seatNumber;
+        console.log("你选中了" + this.choise_seatNumber + "座位");
+        MessageBox.confirm(
+          "投票给" + this.choise_seatNumber + "号玩家"
+        ).then(async action => {
+          if (action === "confirm") {
+            //确认投票
+            let voteKillResult = await axios({
+              url: _this.$common.url.host + _this.$common.url.roomVoteKill,
+              method: "POST",
+              withCredentials: true,
+              data: {
+                roomNumber: _this.roomNumber,
+                seatsNumber: _this.choise_seatNumber
+              }
+            });
+            console.log(voteKillResult);
+          }
+        });
+        //处于非isVoting状态
+        this.isVoting = false;
+        return;
+      }
+
       //发送后端，此人坐了此座位
       let sitResult = await axios({
         url: _this.$common.url.host + _this.$common.url.roomSitHere,
@@ -107,6 +156,65 @@ export default {
         }, 2000);
         return;
       }
+    },
+    //点击了投票按钮
+    voteButton: function() {
+      //字体弹出时间400ms
+      const time = 400;
+
+      //如果已经弹出按钮项则收回按钮项
+      if (this.btn_son1_status === "moveup2") {
+        this.btn_son3_status = "movedown4";
+        setTimeout(() => {
+          this.btn_son2_status = "movedown3";
+        }, time / 2);
+        setTimeout(() => {
+          this.btn_son1_status = "movedown2";
+        }, time);
+
+        setTimeout(() => {
+          this.btn_son3_status = "";
+          this.btn_son2_status = "";
+          this.btn_son1_status = "";
+        }, 2 * time);
+
+        return;
+      }
+
+      this.btn_son1_status = "moveup2";
+      setTimeout(() => {
+        this.btn_son2_status = "moveup3";
+      }, time / 2);
+      setTimeout(() => {
+        this.btn_son3_status = "moveup4";
+      }, time);
+    },
+    //点击了发起投票按钮
+    beginVote: async function() {
+      const _this = this;
+      console.log("发起投票");
+      let beginVoteResult = await axios({
+        url: _this.$common.url.host + _this.$common.url.roomBeginVote,
+        method: "POST",
+        withCredentials: true,
+        data: {
+          roomNumber: _this.roomNumber
+        }
+      });
+      if (!beginVoteResult.data.success) {
+        Toast({
+          message: beginVoteResult.data.message,
+          position: "middle",
+          duration: 1000
+        });
+      }
+    },
+    checkVotes: function() {
+      console.log("查看票型");
+    },
+    killVote: function() {
+      this.isVoting = true;
+      console.log("玩家投票阶段，请点击座位号投票");
     }
   },
   mounted: async function() {
@@ -148,7 +256,6 @@ export default {
           },
           method: "GET"
         });
-        console.log("更新了一次", roomResult.data);
         //请求成功
         if (roomResult.data.success) {
           //更新前端页面数据
@@ -170,11 +277,53 @@ export default {
           _this.seats = seats;
         }
       }
+    },
+    //每次房间信息发生变化,更新页面
+    roomInfo: function() {
+      //阶段变化
+      if (this.roomInfo.moment === "voteKill") {
+        console.log("进入了投票阶段");
+      }
+      switch (this.roomInfo.countDown) {
+        case 32:
+          this.countOut = false;
+          this.countIn = true;
+          this.roomInfo.countDown = "投票开始!";
+          break;
+        case 31:
+          this.roomInfo.countDown = "倒计时开始!";
+          break;
+        case 0:
+          this.roomInfo.countDown = "投票结束!";
+          break;
+        case -1:
+          this.roomInfo.countDown = "请查看票型!";
+          break;
+        case -2:
+          this.roomInfo.countDown = "请查看票型!";
+          break;
+        case -3:
+          this.roomInfo.countDown = "请查看票型!";
+          this.countIn = false;
+          this.countOut = true;
+          break;
+      }
     }
   }
 };
 </script>
 <style scoped>
+.title_count {
+  text-align: center;
+  font-weight: 700;
+  font-size: 7vw;
+  position: fixed;
+  width: 60vw;
+  height: 10vw;
+  top: 3vw;
+  left: 20vw;
+  color: rgb(255, 110, 110);
+}
 .room {
   height: 100vh;
   width: 100vw;
@@ -262,6 +411,7 @@ export default {
   box-sizing: border-box;
   width: 100vw;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
   text-align: center;
   line-height: 10vh;
@@ -269,6 +419,13 @@ export default {
 }
 .btn {
   flex-grow: 1;
+  width: 33.33vw;
+}
+.btnson {
+  background: rgba(0, 0, 0, 0);
+}
+.hideButton {
+  width: 33.33vw;
 }
 
 @keyframes comein {
@@ -305,5 +462,73 @@ export default {
   height: 150vw;
   top: 15vw;
   left: 0;
+}
+
+@keyframes moveup2 {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-200%);
+  }
+}
+.moveup2 {
+  animation: moveup2 0.4s forwards;
+}
+@keyframes moveup3 {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-400%);
+  }
+}
+.moveup3 {
+  animation: moveup3 0.4s forwards;
+}
+@keyframes moveup4 {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-600%);
+  }
+}
+.moveup4 {
+  animation: moveup4 0.4s forwards;
+}
+
+@keyframes movedown2 {
+  0% {
+    transform: translateY(-200%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
+.movedown2 {
+  animation: movedown2 0.4s forwards;
+}
+@keyframes movedown3 {
+  0% {
+    transform: translateY(-400%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
+.movedown3 {
+  animation: movedown3 0.4s forwards;
+}
+@keyframes movedown4 {
+  0% {
+    transform: translateY(-600%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.movedown4 {
+  animation: movedown4 0.4s forwards;
 }
 </style>
