@@ -252,7 +252,9 @@ export default {
     rgba(204, 204, 153, 0.4),
     rgba(204, 204, 153, 0.7)
   ); */
-  background: linear-gradient(to bottom, rgb(0, 0, 0), rgba(0, 0, 0, 0.7));
+  /* background: linear-gradient(to bottom, rgb(0, 0, 0), rgba(0, 0, 0, 0.7)); */
+  background-image: url(../../assets/ele/34.png);
+  background-size: 100% 140%;
 }
 .header {
   margin-top: 5vh;

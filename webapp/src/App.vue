@@ -74,10 +74,10 @@ div {
   width: 100vw;
   position: absolute;
 }
-.header {
+/* .header {
   background-color: #454545;
   height: 45px;
-}
+} */
 .my_router {
   margin-top: 0px;
 }
@@ -141,5 +141,11 @@ html {
 }
 .router_view {
   position: absolute;
+}
+/*更改样式mint-msgbox-message*/
+.mint-msgbox-message {
+  max-height: 50vh;
+  overflow: auto;
+  line-height: 30px;
 }
 </style>

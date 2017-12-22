@@ -43,6 +43,7 @@ export default {
                 cidian: 1,
                 gamerule: 1,
                 loginPage: 1,
+                developer: 1,
                 signin: 2,
                 beforeUrl: '',
             },

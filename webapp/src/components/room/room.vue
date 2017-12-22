@@ -256,7 +256,7 @@ export default {
           let str = "";
           for (let k = 1; k < votes_array[i].length; k++) {
             if (votes_array[i][k] === j) {
-              str = str + k + " ";
+              str = str + k + "  ";
             }
             if (k === votes_array[i].length - 1 && str !== "") {
               str = str + "->" + j;

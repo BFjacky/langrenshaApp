@@ -25,7 +25,7 @@
           <blockbutton title="分享给好友"type=4></blockbutton>
         </div>
         <div class="buttonBar">
-          <blockbutton title="开发者"type=5></blockbutton>        
+          <blockbutton  v-on:clicklick="gotoNextPage" title="开发者"type=5></blockbutton>        
         </div>
         <div class="buttonBar">
           <blockbutton title=""type=6 ></blockbutton>        
@@ -72,6 +72,10 @@ export default {
         }
         case "游戏背景": {
           this.$router.push({ name: "gameBackground" });
+          break;
+        }
+        case "开发者": {
+          this.$router.push({ name: "developer" });
           break;
         }
       }

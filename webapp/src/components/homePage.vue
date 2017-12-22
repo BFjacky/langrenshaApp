@@ -16,7 +16,7 @@
     </mt-tab-container>
     <mt-tabbar v-model="selected" v-bind:fixed="mytrue" class = 'bar'>
         <mt-tab-item id="shouye" class="item">
-        <img slot="icon" src="../assets/geren_xiao.png">
+        <img slot="icon" src="../assets/shouye.png">
         首页
         </mt-tab-item>
         <!--mt-tab-item id="fangjian" class="item">
@@ -24,7 +24,7 @@
         房间
         </mt-tab-item-->
         <mt-tab-item id="fangjian"class="item" >
-        <img slot="icon" src="../assets/geren_xiao.png">
+        <img slot="icon" src="../assets/fangjian.png">
         房间
         </mt-tab-item>
         <mt-tab-item id="wode" class="item">

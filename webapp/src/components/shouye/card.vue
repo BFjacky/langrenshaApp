@@ -62,8 +62,8 @@ export default {
 .color2 {
   background: linear-gradient(
     to bottom right,
-    rgba(255, 255, 255, 0.7),
-    rgb(250, 255, 234)
+    rgba(198, 242, 252, 0.5),
+    rgba(227, 255, 253, 0.322)
   );
   color: rgb(58, 58, 58);
 }

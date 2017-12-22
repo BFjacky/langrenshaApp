@@ -7,6 +7,7 @@ import gameBackground from '@/components/personal/gameBackground'
 import gamerule from '@/components/personal/gamerule'
 import loginPage from '@/components/personal/loginPage'
 import signin from '@/components/personal/signin'
+import developer from '@/components/developer'
 
 import card from '@/components/room/roleCard'
 Vue.use(Router)
@@ -53,5 +54,10 @@ export default new Router({
       name: 'card',
       component: card
     },
+    {
+      path: '/developer',
+      name: 'developer',
+      component: developer
+    }
   ]
 })
