@@ -1,12 +1,12 @@
 <template>
   <div class='room'>
-         <div class="title_count" v-bind:class="{comeIn:countIn,comeOut:countOut}">{{roomInfo.countDown}}</div>
+      <div class="title_count" v-bind:class="{comeIn:countIn,comeOut:countOut}">{{roomInfo.countDown}}</div>
       <div class="header">
           <div class="title">房间号:{{roomNumber}}</div>
           <div class="tietu_title"></div>
       </div>
       <div class="seats" v-bind:class="{seats_backimg:roomNumber===''}">
-          <div class="seat" v-for="seatNumber in seatsNumber" v-on:click="sitHere(seatNumber)">
+          <div v-bind:class="{seat:!isVoting,highLight:isVoting}" v-for="seatNumber in seatsNumber" v-on:click="sitHere(seatNumber)">
             <div class="number_text">{{seatNumber}}</div>
             <div class="name_text">{{seats[seatNumber-1]===undefined?"":seats[seatNumber-1].name}}</div>
           </div>
@@ -20,7 +20,6 @@
         <div class="hideButton">
           <div class="btn_son" v-bind:class="btn_son1_status" v-on:click="beginVote">发起投票</div>
           <div class="btn_son" v-bind:class="btn_son2_status" v-on:click="checkVotes">查看票型</div>
-          <div class="btn_son" v-bind:class="btn_son3_status" v-on:click="killVote">投票处决</div>
         </div>
       </div>
       <role-card v-bind:role="role" class="roleCard" v-bind:class="{comeIn:fadeIn,comeOut:fadeOut} "v-show="roleCardShow" v-on:animationend="rolecardEnd"></role-card>
@@ -63,7 +62,9 @@ export default {
 
       //投票处决相关数据
       isVoting: false,
-      choise_seatNumber: undefined
+      choise_seatNumber: undefined,
+      //所有玩家坐下则锁定座位
+      lockSeat: false
     };
     i;
   },
@@ -71,7 +72,7 @@ export default {
     sitHere: async function(seatNumber) {
       const _this = this;
       //处于投票阶段,阻塞坐座位请求，只选中座位
-      if (this.isVoting) {
+      if (this.isVoting || this.lockSeat) {
         this.choise_seatNumber = seatNumber;
         console.log("你选中了" + this.choise_seatNumber + "座位");
         MessageBox.confirm(
@@ -85,7 +86,7 @@ export default {
               withCredentials: true,
               data: {
                 roomNumber: _this.roomNumber,
-                seatsNumber: _this.choise_seatNumber
+                seatNumber: _this.choise_seatNumber
               }
             });
             console.log(voteKillResult);
@@ -211,10 +212,6 @@ export default {
     },
     checkVotes: function() {
       console.log("查看票型");
-    },
-    killVote: function() {
-      this.isVoting = true;
-      console.log("玩家投票阶段，请点击座位号投票");
     }
   },
   mounted: async function() {
@@ -282,7 +279,7 @@ export default {
     roomInfo: function() {
       //阶段变化
       if (this.roomInfo.moment === "voteKill") {
-        console.log("进入了投票阶段");
+        this.isVoting = true;
       }
       switch (this.roomInfo.countDown) {
         case 32:
@@ -295,6 +292,7 @@ export default {
           break;
         case 0:
           this.roomInfo.countDown = "投票结束!";
+          this.isVoting = false;
           break;
         case -1:
           this.roomInfo.countDown = "请查看票型!";
@@ -307,6 +305,14 @@ export default {
           this.countIn = false;
           this.countOut = true;
           break;
+      }
+    },
+
+    //获得role信息
+    role: function() {
+      if (this.role != null) {
+        //有了角色则说明座位坐满
+        this.lockSeat = true;
       }
     }
   }
@@ -387,6 +393,28 @@ export default {
   border-radius: 3vw;
   padding: 1vw;
   box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.582);
+}
+.highLight {
+  width: 22vw;
+  height: 22vw;
+  box-sizing: border-box;
+  border: 0px solid black;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background: radial-gradient(circle, rgb(255, 255, 255), rgb(245, 255, 247));
+  border-radius: 3vw;
+  padding: 1vw;
+  box-shadow: 0 0 5px 5px rgba(255, 0, 0, 0.795);
+}
+.highLight:active {
+  background: radial-gradient(
+    circle,
+    rgba(0, 30, 255, 0.733),
+    rgb(29, 187, 235)
+  );
 }
 .seat:active {
   background: radial-gradient(circle, rgb(153, 153, 102), rgb(153, 153, 102));
