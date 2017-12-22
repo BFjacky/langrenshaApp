@@ -583,7 +583,7 @@ class RoomController extends Controller {
 
         //投票结束，回到初始状态
         await updateCountByRoomNumber(roomNumber, null);
-        await updateMomentByRoomNumber(roomNumber, "speak");
+        await updateMomentByRoomNumber(roomNumber, "speak", nowVoteTime);
         return;
 
     }
@@ -657,6 +657,20 @@ class RoomController extends Controller {
                 break;
             }
         }
+        //投票者未坐下
+        if (hostSeatNumber == null) {
+            this.ctx.body = { success: false, message: "请先坐到位置上在投票" }
+            return;
+        }
+
+        //未到投票阶段
+        if (roomInfo.moment !== "voteKill") {
+            this.ctx.body = { success: false, message: "投票失败，未到投票环节" }
+            return;
+        }
+
+        //该玩家已经投过票了
+
 
 
         //将此次投票信息记录下来
@@ -664,7 +678,7 @@ class RoomController extends Controller {
         roomInfo = roomInfo[0];
         roomInfo.votes[roomInfo.nowVoteTime] === undefined ? roomInfo.votes[roomInfo.nowVoteTime] = "" : roomInfo.votes[roomInfo.nowVoteTime];
         roomInfo.votes[roomInfo.nowVoteTime] = roomInfo.votes[roomInfo.nowVoteTime] + hostSeatNumber + "->" + seatNumber + ",";
-        let updateVotesResult = await updateVotes(roomNumber, roomInfo.votes[roomInfo.nowVoteTime]);
+        let updateVotesResult = await updateVotes(roomNumber, roomInfo.votes);
         console.log(updateVotesResult);
         if (updateVotesResult.ok === 1) {
             this.ctx.body = { success: true, message: "投票成功" }
