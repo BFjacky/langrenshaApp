@@ -22,8 +22,8 @@ export default {
             },
             //url集合
             url: {
-                host: "http://ccc.feit.me",
-                //host: 'http://47.94.15.66:7001',
+                //host: "http://ccc.feit.me",
+                host: 'http://47.94.15.66:7001',
                 userSignin: '/user/signin',
                 userLogin: '/user/login',
                 userGetInfo: '/user/getInfo',

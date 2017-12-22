@@ -89,11 +89,13 @@ export default {
                 seatNumber: _this.choise_seatNumber
               }
             });
-            console.log(voteKillResult);
+            Toast({
+              message: voteKillResult.data.message,
+              position: "middle",
+              duration: 1000
+            });
           }
         });
-        //处于非isVoting状态
-        this.isVoting = false;
         return;
       }
 
@@ -211,7 +213,83 @@ export default {
       }
     },
     checkVotes: function() {
-      console.log("查看票型");
+      let votes = [];
+      const _this = this;
+      if (this.roomInfo.votes == undefined || this.roomInfo.votes.length == 0) {
+        MessageBox({
+          title: "",
+          message: "暂无投票信息",
+          closeOnClickModal: true
+        });
+        return;
+      }
+      //整理票型字符串成数组
+      let votes_array = [];
+      for (let i = 1; i < this.roomInfo.votes.length; i++) {
+        votes_array[i] = [];
+        let patt = /\d+->\d+/g;
+        let str = this.roomInfo.votes[i].match(patt);
+        for (let j = 0; j < str.length; j++) {
+          //获得前面的数字
+          patt = /\d+->/g;
+          let str_left = str[j].match(patt)[0];
+          patt = /\d+/g;
+          str_left = str_left.match(patt)[0];
+          //获得后面的数字
+          patt = /->\d+/g;
+          let str_right = str[j].match(patt)[0];
+          patt = /\d+/g;
+          str_right = str_right.match(patt)[0];
+
+          //放进数组里
+          votes_array[i][parseInt(str_left)] = parseInt(str_right);
+        }
+      }
+      console.log(votes_array);
+      //将数组整理成字符串
+      let strs = [];
+      for (let i = 1; i < votes_array.length; i++) {
+        strs[i] = [];
+        let index = 0;
+        //从一号玩家开始，找到所有投该玩家的人
+        for (let j = 1; j <= this.roomInfo.people_number; j++) {
+          let str = "";
+          for (let k = 1; k < votes_array[i].length; k++) {
+            if (votes_array[i][k] === j) {
+              str = str + k + " ";
+            }
+            if (k === votes_array[i].length - 1 && str !== "") {
+              str = str + "->" + j;
+              break;
+            }
+          }
+          if (str !== "") {
+            strs[i][index] = str;
+            index++;
+          }
+        }
+      }
+      console.log(strs);
+
+      let result = "";
+      for (let i = 1; i < strs.length; i++) {
+        result = result + `第${i}轮投票:<br/>`;
+        if (
+          i === this.roomInfo.nowVoteTime &&
+          this.roomInfo.moment === "voteKill"
+        ) {
+          result = result + "投票结束后查看!";
+        } else {
+          for (let j = 0; j < strs[i].length; j++) {
+            result = result + strs[i][j] + "<br/>";
+          }
+        }
+      }
+      MessageBox({
+        title: "",
+        message: result,
+        closeOnClickModal: true
+      });
     }
   },
   mounted: async function() {
@@ -278,11 +356,9 @@ export default {
     //每次房间信息发生变化,更新页面
     roomInfo: function() {
       //阶段变化
-      if (this.roomInfo.moment === "voteKill") {
-        this.isVoting = true;
-      }
       switch (this.roomInfo.countDown) {
         case 32:
+          this.isVoting = true;
           this.countOut = false;
           this.countIn = true;
           this.roomInfo.countDown = "投票开始!";
@@ -410,11 +486,7 @@ export default {
   box-shadow: 0 0 5px 5px rgba(255, 0, 0, 0.795);
 }
 .highLight:active {
-  background: radial-gradient(
-    circle,
-    rgba(0, 30, 255, 0.733),
-    rgb(29, 187, 235)
-  );
+  background: radial-gradient(circle, rgb(255, 106, 106), rgb(255, 0, 0));
 }
 .seat:active {
   background: radial-gradient(circle, rgb(153, 153, 102), rgb(153, 153, 102));

@@ -234,7 +234,6 @@ class RoomController extends Controller {
                 roomInfo = roomInfo[0];
             } else {
                 this.ctx.body = { success: true, message: "成功找到该房间", roomInfo: roomInfo }
-                console.log('返回了一次')
                 return;
             }
             await wait(10);
@@ -552,7 +551,6 @@ class RoomController extends Controller {
         user = user[0];
 
         //此用户不为房主不可发起投票
-        console.log(user, roomInfo);
         if (user.id !== roomInfo.masterId) {
             this.ctx.body = { success: false, message: "你不是房主不能发起投票" }
             return;
@@ -670,7 +668,22 @@ class RoomController extends Controller {
         }
 
         //该玩家已经投过票了
-
+        roomInfo = await findRoomByRoomNumber(roomNumber);
+        roomInfo = roomInfo[0];
+        let voteStr = roomInfo.votes[roomInfo.nowVoteTime];
+        if (voteStr != undefined) {
+            let patt = /\d+->/g;
+            voteStr = voteStr.match(patt);
+            patt = /\d+/g;
+            let number;
+            for (let i = 0; i < voteStr.length; i++) {
+                number = voteStr[i].match(patt);
+                if (number == hostSeatNumber) {
+                    this.ctx.body = { success: false, message: "已经投过票了,不能重复投票" };
+                    return;
+                }
+            }
+        }
 
 
         //将此次投票信息记录下来
@@ -679,7 +692,6 @@ class RoomController extends Controller {
         roomInfo.votes[roomInfo.nowVoteTime] === undefined ? roomInfo.votes[roomInfo.nowVoteTime] = "" : roomInfo.votes[roomInfo.nowVoteTime];
         roomInfo.votes[roomInfo.nowVoteTime] = roomInfo.votes[roomInfo.nowVoteTime] + hostSeatNumber + "->" + seatNumber + ",";
         let updateVotesResult = await updateVotes(roomNumber, roomInfo.votes);
-        console.log(updateVotesResult);
         if (updateVotesResult.ok === 1) {
             this.ctx.body = { success: true, message: "投票成功" }
             return;
