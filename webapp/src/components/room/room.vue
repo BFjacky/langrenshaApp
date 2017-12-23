@@ -385,12 +385,7 @@ export default {
     },
 
     //获得role信息
-    role: function() {
-      if (this.role != null) {
-        //有了角色则说明座位坐满
-        this.lockSeat = true;
-      }
-    }
+    role: function() {}
   }
 };
 </script>

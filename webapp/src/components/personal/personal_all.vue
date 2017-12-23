@@ -147,6 +147,8 @@ export default {
   border-radius: 50%;
   margin-left: 20px;
   box-shadow: 0px 0px 1px 2px rgb(224, 224, 224);
+  background-image: url(../../assets/ele/5.png);
+  background-size: 100% 100%;
 }
 .text {
   color: #000000;
