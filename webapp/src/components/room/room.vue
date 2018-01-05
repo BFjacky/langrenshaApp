@@ -6,13 +6,13 @@
           <div class="tietu_title"></div>
       </div>
       <div class="seats" v-bind:class="{seats_backimg:roomNumber===''}">
-          <div v-bind:class="{seat:!isVoting,highLight:isVoting}" v-for="seatNumber in seatsNumber" v-on:click="sitHere(seatNumber)">
+          <div v-bind:class="{seat:!isVoting,highLight:isVoting||usingSkill}" v-for="seatNumber in seatsNumber" v-on:click="sitHere(seatNumber)">
             <div class="number_text">{{seatNumber}}</div>
             <div class="name_text">{{seats[seatNumber-1]===undefined?"":seats[seatNumber-1].name}}</div>
           </div>
       </div>
       <div class="btn_box">
-        <div class="btn">使用技能</div>
+        <div class="btn" v-on:click="actionButton">使用技能</div>
         <div class="btn" v-on:touchstart="checkRole">查看身份</div>
         <div class="btn" v-on:click="voteButton">投票处决</div>
         <div class="hideButton"></div>
@@ -43,6 +43,8 @@ export default {
       seats: [],
       //该玩家身份
       role: "",
+      //该玩家用户id
+      userId: "",
       //卡片淡入淡出效果
       fadeIn: false,
       fadeOut: true,
@@ -64,13 +66,62 @@ export default {
       isVoting: false,
       choise_seatNumber: undefined,
       //所有玩家坐下则锁定座位
-      lockSeat: false
+      lockSeat: false,
+
+      //是否处在使用技能阶段
+      usingSkill: false,
+      //弯角选择是否使用技能
+      skillResult: []
     };
-    i;
   },
   methods: {
     sitHere: async function(seatNumber) {
       const _this = this;
+      const showMessageBox = async function(String) {
+        return new Promise((resolve, reject) => {
+          MessageBox.confirm(String)
+            .then(async action => {
+              resolve(true);
+            })
+            .catch(async action => {
+              resolve(false);
+            });
+        });
+      };
+      //如果处在使用技能阶段，则阻塞其他选座位请求
+      if (this.usingSkill === true) {
+        let result;
+        this.choise_seatNumber = seatNumber;
+        console.log(this.usingSkill, this.skillResult, this.choise_seatNumber);
+        //弹出messageBox二次确认
+        switch (this.role) {
+          case "langren":
+            result = await showMessageBox(`猎杀${this.choise_seatNumber}号玩家`);
+            break;
+          case "nvwu":
+            result = await showMessageBox(`毒杀${this.choise_seatNumber}号玩家`);
+            break;
+          case "yvyanjia":
+            result = await showMessageBox(`查验${this.choise_seatNumber}号玩家`);
+            break;
+          case "shouwei":
+            result = await showMessageBox(`守护${this.choise_seatNumber}号玩家`);
+            break;
+          case "lieren":
+            result = await showMessageBox(`带走${this.choise_seatNumber}号玩家`);
+            break;
+          case "langwang":
+            result = await showMessageBox(`带走${this.choise_seatNumber}号玩家`);
+            break;
+        }
+        console.log(111, result);
+        //恢复技能使用之前的状态
+        this.usingSkill = false;
+        this.skillResult = [];
+        this.choise_seatNumber = undefined;
+        return;
+      }
+
       //处于投票阶段,阻塞坐座位请求，只选中座位
       if (this.isVoting || this.lockSeat) {
         this.choise_seatNumber = seatNumber;
@@ -96,6 +147,7 @@ export default {
             });
           }
         });
+        this.choise_seatNumber = undefined;
         return;
       }
 
@@ -290,6 +342,93 @@ export default {
         message: result,
         closeOnClickModal: true
       });
+    },
+
+    //玩家点击了使用技能按钮
+    actionButton: async function() {
+      //本地还没有玩家信息
+      if (this.roomInfo == undefined || this.roomInfo.players == undefined) {
+        Toast({
+          message: "请先进入一个房间",
+          position: "middle",
+          duration: 1000
+        });
+        return;
+      }
+      //本地有了玩家信息
+      for (let i = 0; i < this.roomInfo.players.length; i++) {
+        if (this.userId === this.roomInfo.players[i].id) {
+          this.role = this.roomInfo.players[i].role;
+        }
+      }
+
+      //如果该玩家还没被分配角色
+      if (this.role == "") {
+        Toast({
+          message: "还未确定角色!",
+          position: "middle",
+          duration: 1000
+        });
+        return;
+      }
+
+      /**@augments
+       * 使用技能方法，根据不同角色提供不同的技能提示框
+       * langren nvwu yvyanjia shouwei lieren langwang 
+       */
+
+      const showMessageBox = function(String) {
+        return new Promise((resolve, reject) => {
+          MessageBox.confirm(String)
+            .then(action => {
+              resolve(true);
+            })
+            .catch(action => {
+              resolve(false);
+            });
+        });
+      };
+      const use_skill = async function(role) {
+        console.log(role + "使用技能了");
+        let result = [];
+        switch (role) {
+          case "langren":
+            result[0] = await showMessageBox("是否发动狼人猎杀技能");
+            break;
+          case "nvwu":
+            result[0] = await showMessageBox("x号玩家死亡,是否发动女巫解药技能");
+            result[1] = await showMessageBox("是否发动女巫毒药技能");
+            break;
+          case "yvyanjia":
+            result[0] = await showMessageBox("是否发动预言家查验技能");
+            break;
+          case "shouwei":
+            result[0] = await showMessageBox("是否发动守卫守护技能");
+            break;
+          case "lieren":
+            result[0] = await showMessageBox("是否发动猎人枪毙技能");
+            break;
+          case "langwang":
+            result[0] = await showMessageBox("是否发动狼王带走技能");
+            break;
+        }
+        return result;
+      };
+
+      /**@augments
+       * 该玩家已经有了角色
+       * 使用技能根据不同身份，提示框不同
+       */
+      let result = await use_skill(this.role);
+      this.skillResult = result;
+      //该角色发动技能，等待选择座位号
+      if (result[result.length - 1]) {
+        this.usingSkill = true;
+        return;
+      }
+      //该角色拒绝发动技能,无需选座位,向后端发送数据
+      //code*****
+      console.log("拒绝发动技能");
     }
   },
   mounted: async function() {
@@ -304,6 +443,17 @@ export default {
       this.roomInfo = {};
       this.role = "";
       console.log("初始化房间");
+
+      //获取一下用户的id信息,保存在前端中
+      let idResult = await axios({
+        url: _this.$common.url.host + _this.$common.url.roomGetId,
+        method: "POST",
+        withCredentials: true,
+        data: {}
+      });
+      if (idResult.data != undefined) {
+        _this.userId = idResult.data.id;
+      }
 
       let InfoResult = await axios({
         url: _this.$common.url.host + _this.$common.url.roomGetInfo,
@@ -355,6 +505,7 @@ export default {
     },
     //每次房间信息发生变化,更新页面
     roomInfo: function() {
+      const _this = this;
       //阶段变化
       switch (this.roomInfo.countDown) {
         case 32:

@@ -586,6 +586,32 @@ class RoomController extends Controller {
 
     }
 
+    async getId() {
+        const finduserByAccount = function (account) {
+            return new Promise((resolve, reject) => {
+                userSchema.find({ account: account }, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                })
+            })
+        }
+        if (this.ctx.user === undefined) {
+            this.ctx.body = { success: false, message: "请先登录" }
+            return;
+        }
+        const userAccount = this.ctx.user.account;
+        let user = await finduserByAccount(userAccount);
+        if (user.length === 0) {
+            this.ctx.body = { success: false, message: "未找到此用户" }
+            return;
+        }
+        this.ctx.body = { success: true, message: "获得用户id", id: user[0].id };
+        return;
+    }
+
     async voteKill() {
         //根据房间号查找数据库中的房间信息
         const findRoomByRoomNumber = function (roomNumber) {

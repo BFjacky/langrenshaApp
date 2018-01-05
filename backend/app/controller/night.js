@@ -1,5 +1,3 @@
-import { access } from 'fs';
-
 /**
  * 用于处理房屋夜间信息
  * 回合流程控制
@@ -55,7 +53,7 @@ class HomeController extends Controller {
         room = room[0];
 
         //查看当前的moment，储存该用户在次夜晚的操作，更新当前的moment为下一moment
-        
+
     }
 }
 

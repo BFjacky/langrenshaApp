@@ -40,6 +40,11 @@ module.exports = app => {
    */
   router.post("/room/checkRole", controller.room.checkRole)
 
+  /**
+   * 获得当前用户id
+   * room前端不需提交任何内容 返回值:{success:Boolean,message:String,id:String}
+   */
+  router.post("/room/getId", controller.room.getId)
 
   /**
    * 发起投票
@@ -59,5 +64,5 @@ module.exports = app => {
    * 接收玩家提交的技能请求，更新夜晚信息，跳转到下一个回合
    * room前端提交 房间号roomNumber:String,该玩家的操作信息, 根据token获得用户信息  返回值:{success:Boolean,message:String}
    */
-  router.post("/night/action",controller.night.action)
+  router.post("/night/action", controller.night.action)
 };
